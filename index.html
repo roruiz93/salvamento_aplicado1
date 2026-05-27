@@ -165,9 +165,10 @@ const CURRENTS=[
   ]},
 
   // CORRIENTE DE CALIFORNIA (fría, fluye S)
-  // Costa O EEUU: ~124°W en 38°N, ~117°W en 32°N, ~109°W en 24°N
+  // NACE en ~44°N,-137°W: bifurcación del Pacífico Norte (termina ahí)
+  // Alaska dobla NO desde ese mismo punto; California dobla SE hacia la costa
   {cA:T.C1,cB:T.M2,n:50,s:.0015,pts:[
-    [50,-130],[44,-127],[38,-124],[30,-120],[23,-114],[17,-107]
+    [44,-137],[44,-128],[38,-124],[30,-120],[23,-114],[17,-107]
   ]},
 
   // ====================================================
@@ -216,9 +217,10 @@ const CURRENTS=[
   ]},
 
   // CORRIENTE DE LAS GUAYANAS (cálida, fluye NO por la costa N de S. América)
-  // Desde el Atlántico hasta el Caribe (~8-18°N, -52 a -87°W), alimenta el Gulf Stream
-  {cA:T.W1,cB:T.HOT,n:55,s:.0015,pts:[
-    [8,-52],[10,-60],[11,-65],[12,-72],[13,-77],[15,-82],[18,-87]
+  // NACE en el mismo punto que Brasil (~5°S,36°W) como rama N de la bifurcación
+  // del Ecuatorial Sur: Brasil dobla S, Guayanas sube N y luego NO hacia Caribe
+  {cA:T.W1,cB:T.HOT,n:60,s:.0015,pts:[
+    [-3,-36],[1,-46],[5,-55],[8,-59],[10,-62],[11,-65],[12,-72],[13,-77],[15,-82],[18,-87]
   ]},
 
   // GULF STREAM (muy caliente, fluye NE a lo largo costa E EEUU)
@@ -245,9 +247,10 @@ const CURRENTS=[
   ]},
 
   // CORRIENTE DE CANARIAS (fría, fluye S a lo largo de W Europa/África)
-  // Costa W Iberia/África: ~9-17°W
+  // NACE en ~55°N,-20°W: bifurcación del Gulf Stream (pasa por ese punto)
+  // La rama NE sigue como C. de Noruega; la rama S dobla acá como Canarias
   {cA:T.C1,cB:T.M2,n:50,s:.0014,pts:[
-    [55,-13],[48,-12],[40,-12],[33,-14],[24,-17],[14,-18]
+    [55,-20],[50,-14],[43,-12],[36,-12],[28,-15],[20,-18],[14,-18]
   ]},
 
   // CONTRACORRIENTE ECUATORIAL ATLANTICO (fluye E, ~5°N)
@@ -272,9 +275,10 @@ const CURRENTS=[
   ]},
 
   // CORRIENTE DE BRASIL (cálida, fluye S a lo largo de Brasil)
-  // Se desvía al E en la confluencia (~38°S, 52°W) cerca de Buenos Aires
+  // NACE en el mismo punto que Guayanas: bifurcación del Ecuatorial Sur (~5°S,36°W)
+  // Rama S dobla hacia el sur siguiendo la costa de Brasil
   {cA:T.HOT,cB:T.W3,n:50,s:.0015,pts:[
-    [-5,-33],[-12,-36],[-20,-40],[-28,-46],[-35,-52],[-38,-52]
+    [-5,-36],[-12,-36],[-20,-40],[-28,-46],[-35,-52],[-38,-52]
   ]},
 
   // CORRIENTE DE MALVINAS / FALKLAND (fría, fluye N y se desvía al E)
