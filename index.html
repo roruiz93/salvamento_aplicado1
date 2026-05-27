@@ -145,7 +145,7 @@ const CURRENTS=[
   // KUROSHIO (fluye NE a lo largo de la costa E de Japón)
   // Japón costa E: ~140-145°E entre 30-43°N → corriente va por el Este
   {cA:T.HOT,cB:T.W2,n:50,s:.0018,pts:[
-    [14,127],[23,129],[28,131],[33,135],[37,141],[40,148],[43,154],[45,158]
+    [14,127],[23,129],[28,133],[34,138],[37,141],[40,148],[43,154],[45,158]
   ]},
 
   // CORRIENTE DEL PACIFICO NORTE (Kuroshio Extension, fluye E)
@@ -191,7 +191,12 @@ const CURRENTS=[
   // CORRIENTE DE AUSTRALIA ORIENTAL (cálida, fluye S)
   // Costa E Australia: ~151-157°E entre -10 y -40°S
   {cA:T.W1,cB:T.W3,n:45,s:.0015,pts:[
-    [-12,148],[-16,157],[-22,156],[-28,155],[-34,152],[-40,151],[-43,149],[-57,148]
+    [-12,148],[-16,157],[-22,156],[-28,155],[-34,152],[-40,151],[-43,149]
+  ]},
+
+  // DERIVA SUBANTARTICA PAC. SUR (fría, conecta E.Australiana con Circumpolar)
+  {cA:T.M2,cB:T.C4,n:30,s:.001,pts:[
+    [-43,149],[-52,148],[-57,148]
   ]},
 
   // CORRIENTE DE AUSTRALIA OCCIDENTAL (fría, fluye N)
@@ -221,7 +226,7 @@ const CURRENTS=[
   // NACE en el mismo punto que Brasil (~5°S,36°W) como rama N de la bifurcación
   // del Ecuatorial Sur: Brasil dobla S, Guayanas sube N y luego NO hacia Caribe
   {cA:T.W1,cB:T.HOT,n:60,s:.0015,pts:[
-    [-3,-36],[1,-46],[5,-55],[8,-59],[10,-62],[11,-65],[12,-72],[13,-77],[15,-82],[18,-87],[21,-86]
+    [-3,-35],[1,-46],[5,-55],[8,-59],[10,-62],[11,-65],[12,-72],[13,-77],[15,-82],[18,-87],[21,-86]
   ]},
 
   // GULF STREAM (muy caliente, fluye NE a lo largo costa E EEUU)
@@ -272,14 +277,14 @@ const CURRENTS=[
   // CORRIENTE ECUATORIAL SUR ATLANTICO (fluye W, ~3°S)
   // Se detiene al llegar a la costa NE de Brasil (~35°W)
   {cA:T.W1,cB:T.W1,n:45,s:.0012,pts:[
-    [-3,5],[-3,-12],[-4,-25],[-5,-36]
+    [-3,5],[-3,-12],[-4,-25],[-5,-35]
   ]},
 
   // CORRIENTE DE BRASIL (cálida, fluye S a lo largo de Brasil)
   // NACE en el mismo punto que Guayanas: bifurcación del Ecuatorial Sur (~5°S,36°W)
   // Rama S dobla hacia el sur siguiendo la costa de Brasil
   {cA:T.HOT,cB:T.W3,n:50,s:.0015,pts:[
-    [-5,-36],[-12,-36],[-20,-40],[-28,-46],[-35,-52],[-38,-52]
+    [-5,-35],[-12,-36],[-20,-38],[-28,-45],[-35,-52],[-38,-52]
   ]},
 
   // CORRIENTE DE MALVINAS / FALKLAND (fría, fluye N y se desvía al E)
@@ -320,7 +325,12 @@ const CURRENTS=[
   // CORRIENTE DE LAS AGUJAS / AGULHAS (cálida, fluye S a lo largo E África)
   // Costa E África: ~30-38°E entre -20 y -40°S, offshore de Mozambique y KZN
   {cA:T.W2,cB:T.M1,n:45,s:.0015,pts:[
-    [-20,38],[-25,37],[-29,33],[-33,30],[-36,26],[-38,24],[-40,21],[-50,25],[-57,28]
+    [-20,38],[-25,37],[-29,33],[-33,30],[-36,26],[-38,24],[-40,21]
+  ]},
+
+  // DERIVA SUBANTARTICA INDICO (fría, conecta Agulhas con Circumpolar)
+  {cA:T.M1,cB:T.C4,n:30,s:.001,pts:[
+    [-40,21],[-50,24],[-57,28]
   ]},
 
   // CORRIENTE ECUATORIAL NORTE INDICO (fluye W, ~10°N)
