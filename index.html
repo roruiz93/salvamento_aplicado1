@@ -143,9 +143,10 @@ const CURRENTS=[
   ]},
 
   // KUROSHIO (fluye NE a lo largo de la costa E de Japón)
-  // NACE en [14,127]: bifurcación del Ecuatorial Norte en Filipinas
+  // NACE en [14,127]: bifurcación Ecuatorial Norte en Filipinas
+  // Ruta por Pacífico abierto: evita aguas interiores de Japón
   {cA:T.HOT,cB:T.W2,n:50,s:.0018,pts:[
-    [14,127],[23,129],[28,131],[33,135],[37,141],[40,148],[43,154],[45,158]
+    [14,127],[23,129],[28,133],[34,138],[37,141],[40,148],[43,154],[45,158]
   ]},
 
   // CORRIENTE DEL PACIFICO NORTE (Kuroshio Extension, fluye E)
@@ -159,13 +160,11 @@ const CURRENTS=[
   ]},
 
   // CORRIENTE DE KAMCHATKA / OYASHIO (fría, fluye S)
-  // Costa E Kamchatka: ~160-163°E; costa NE Japón: ~142-145°E
   {cA:T.C2,cB:T.M2,n:45,s:.0015,pts:[
     [57,162],[52,157],[47,152],[42,147],[37,143],[34,141]
   ]},
 
   // CORRIENTE DE CALIFORNIA (fría, fluye S)
-  // NACE en ~44°N,-137°W: bifurcación del Pacífico Norte
   // TERMINA en [14,-106]: mismo punto de inicio de la Ecuatorial Norte
   {cA:T.C1,cB:T.M2,n:50,s:.0015,pts:[
     [44,-137],[44,-128],[38,-124],[30,-120],[23,-114],[17,-107],[14,-106]
@@ -173,12 +172,12 @@ const CURRENTS=[
 
   // ====================================================
   // GIRO DEL PACIFICO SUR (sentido anti-horario)
-  // EC S Pac → E Australiana → Viento Oeste → Humboldt
+  // EC S Pac → E Australiana → Deriva Subantártica → Humboldt
   // ====================================================
 
   // CORRIENTE ECUATORIAL SUR PACIFICO (fluye W, ~5°S)
-  // NACE en [-5,-82]: bifurcación donde Humboldt dobla W
-  // TERMINA en [-12,148]: costa E Queensland, inicia E. Australiana
+  // NACE en [-5,-82] (Humboldt dobla W) → se calienta cruzando el Pacífico
+  // TERMINA en [-12,148]: punta NE de Queensland, inicia E.Australiana
   {cA:T.M1,cB:T.W1,n:55,s:.0013,pts:[
     [-5,-82],[-5,-105],[-5,-130],[-5,-155],[-5,-175],[-5,172],[-5,155],[-12,148]
   ]},
@@ -189,19 +188,22 @@ const CURRENTS=[
   ]},
 
   // CORRIENTE DE AUSTRALIA ORIENTAL (cálida, fluye S)
-  // NACE en [-12,148]: empalme con Ecuatorial Sur Pacífico
-  // TERMINA en [-57,148]: empalme con Circumpolar Antártica
+  // NACE en [-12,148] (empalme Ecuatorial Sur) → se enfría hacia el sur
   {cA:T.W1,cB:T.W3,n:45,s:.0015,pts:[
-    [-12,148],[-16,157],[-22,156],[-28,155],[-34,152],[-40,151],[-43,149],[-57,148]
+    [-12,148],[-16,157],[-22,156],[-28,155],[-34,152],[-40,151],[-43,149]
+  ]},
+
+  // DERIVA SUBANTARTICA PAC. SUR (fría, conecta E.Australiana con Circumpolar)
+  {cA:T.M2,cB:T.C4,n:30,s:.001,pts:[
+    [-43,149],[-52,148],[-57,148]
   ]},
 
   // CORRIENTE DE AUSTRALIA OCCIDENTAL (fría, fluye N)
-  // Costa O Australia: ~113-115°E entre -15 y -35°S
   {cA:T.C1,cB:T.M2,n:40,s:.0012,pts:[
     [-35,115],[-27,113],[-20,113],[-13,116],[-8,118]
   ]},
 
-  // CORRIENTE DE PERU / HUMBOLDT (fría, fluye N luego dobla W al llegar al ecuador)
+  // CORRIENTE DE PERU / HUMBOLDT (fría, fluye N luego dobla W al ecuador)
   // NACE en [-58,-90]: rama de la Circumpolar en el Paso de Drake
   // TERMINA en [-5,-82]: mismo punto de inicio de la Ecuatorial Sur
   {cA:T.C3,cB:T.M1,n:55,s:.0015,pts:[
@@ -210,25 +212,24 @@ const CURRENTS=[
 
   // ====================================================
   // GIRO DEL ATLANTICO NORTE (sentido horario)
-  // EC N Atl → Gulf Stream → N Atlántico → Canarias
+  // EC N Atl → Guayanas/Gulf Stream → N Atlántico → Canarias
   // ====================================================
 
   // CORRIENTE ECUATORIAL NORTE ATLANTICO (fluye W, ~13°N)
-  // NACE en [13,-20]: empalme con C. de Canarias
-  // TERMINA en [10,-62]: empalme con C. de las Guayanas
+  // NACE en [13,-20]: empalme con Canarias
+  // TERMINA en [10,-62]: empalme con C. de las Guayanas (mar Caribe)
   {cA:T.W1,cB:T.HOT,n:50,s:.0013,pts:[
     [13,-20],[13,-38],[13,-56],[10,-62]
   ]},
 
   // CORRIENTE DE LAS GUAYANAS (cálida, fluye NO por la costa N de S. América)
-  // NACE en [-3,-36]: bifurcación Ecuatorial Sur Atlántico
-  // TERMINA en [21,-86]: empalme con inicio del Gulf Stream (Canal de Yucatán)
+  // NACE en [-3,-35]: rama N de bifurcación del Ecuatorial Sur en NE Brasil
+  // TERMINA en [21,-86]: empalme con inicio del Gulf Stream
   {cA:T.W1,cB:T.HOT,n:60,s:.0015,pts:[
-    [-3,-36],[1,-46],[5,-55],[8,-59],[10,-62],[11,-65],[12,-72],[13,-77],[15,-82],[18,-87],[21,-86]
+    [-3,-35],[1,-46],[5,-55],[8,-59],[10,-62],[11,-65],[12,-72],[13,-77],[15,-82],[18,-87],[21,-86]
   ]},
 
   // GULF STREAM (muy caliente, fluye NE a lo largo costa E EEUU)
-  // Nace en el Canal de Yucatán → Estrecho de Florida → NE Atlántico
   {cA:T.HOT,cB:T.W3,n:65,s:.0018,pts:[
     [21,-86],[24,-82],[25,-79],[28,-79],[32,-78],[36,-74],[40,-68],[44,-58],[48,-44],
     [51,-32],[55,-20],[58,-8],[61,2],[63,5]
@@ -240,7 +241,6 @@ const CURRENTS=[
   ]},
 
   // CORRIENTE DEL LABRADOR (fría, fluye S a lo largo de Canadá)
-  // Costa labrador: ~55-60°W en 53-60°N
   {cA:T.C3,cB:T.C1,n:45,s:.0015,pts:[
     [75,-68],[68,-60],[60,-54],[53,-53],[47,-52],[42,-50]
   ]},
@@ -250,8 +250,8 @@ const CURRENTS=[
     [80,-12],[73,-20],[67,-23],[61,-28],[56,-36]
   ]},
 
-  // CORRIENTE DE CANARIAS (fría, fluye S a lo largo de W Europa/África)
-  // NACE en ~55°N,-20°W: bifurcación del Gulf Stream
+  // CORRIENTE DE CANARIAS (fría, fluye S)
+  // NACE en [55,-20]: bifurcación del Gulf Stream
   // TERMINA en [13,-20]: empalme con inicio del Ecuatorial Norte Atlántico
   {cA:T.C1,cB:T.M2,n:50,s:.0014,pts:[
     [55,-20],[50,-14],[43,-12],[36,-12],[28,-15],[20,-18],[13,-20]
@@ -262,42 +262,40 @@ const CURRENTS=[
     [5,-50],[5,-38],[5,-24],[5,-13],[4,-4],[4,5]
   ]},
 
-  // CORRIENTE DE GUINEA (cálida, fluye E a lo largo de África ecuatorial)
+  // CORRIENTE DE GUINEA (cálida, fluye E)
   {cA:T.W1,cB:T.W1,n:35,s:.001,pts:[
     [4,-15],[3,-8],[2,-2],[1,3],[0,5]
   ]},
 
   // ====================================================
   // GIRO DEL ATLANTICO SUR (sentido anti-horario)
-  // EC S Atl → Brasil → Malvinas/Circumpolar → Benguela
+  // EC S Atl → Brasil → Malvinas/S.Atl → Benguela
   // ====================================================
 
   // CORRIENTE ECUATORIAL SUR ATLANTICO (fluye W, ~3°S)
-  // NACE en [-3,5]: empalme con fin de la C. de Benguela
-  // TERMINA en [-5,-36]: bifurcación Brasil (S) y Guayanas (N)
+  // TERMINA en [-5,-35]: punta NE de Brasil (Natal) = bifurcación
+  // Rama N sube como Guayanas, rama S baja como Brasil enfriándose
   {cA:T.W1,cB:T.W1,n:45,s:.0012,pts:[
-    [-3,5],[-3,-12],[-4,-25],[-5,-36]
+    [-3,5],[-3,-12],[-4,-25],[-5,-35]
   ]},
 
-  // CORRIENTE DE BRASIL (cálida, fluye S a lo largo de Brasil)
-  // NACE en [-5,-36]: bifurcación del Ecuatorial Sur
+  // CORRIENTE DE BRASIL (cálida, fluye S, se va enfriando)
+  // NACE en [-5,-35]: rama S de la bifurcación en NE Brasil
   {cA:T.HOT,cB:T.W3,n:50,s:.0015,pts:[
-    [-5,-36],[-12,-36],[-20,-40],[-28,-46],[-35,-52],[-38,-52]
+    [-5,-35],[-12,-36],[-20,-38],[-28,-45],[-35,-52],[-38,-52]
   ]},
 
   // CORRIENTE DE MALVINAS / FALKLAND (fría, fluye N y se desvía al E)
-  // Confluye con Brasil ~38°S cerca de Buenos Aires, ambas giran al E
   {cA:T.C3,cB:T.C1,n:50,s:.0014,pts:[
     [-55,-65],[-50,-61],[-44,-57],[-40,-54],[-38,-52]
   ]},
 
-  // CORRIENTE DEL ATLÁNTICO SUR (fría-templada, fluye E desde confluencia → SW África)
+  // CORRIENTE DEL ATLÁNTICO SUR (corriente de retorno, fluye E)
   {cA:T.M1,cB:T.C1,n:70,s:.0013,pts:[
     [-38,-52],[-39,-42],[-40,-30],[-40,-18],[-39,-6],[-38,6],[-38,18]
   ]},
 
-  // CORRIENTE DE BENGUELA (fría, fluye N a lo largo de SW África)
-  // NACE en [-38,18]: empalme con C. Atlántico Sur
+  // CORRIENTE DE BENGUELA (fría, fluye N)
   // TERMINA en [-3,5]: empalme con inicio del Ecuatorial Sur Atlántico
   {cA:T.C2,cB:T.M2,n:45,s:.0013,pts:[
     [-38,18],[-30,14],[-22,12],[-14,10],[-6,9],[-3,5]
@@ -305,12 +303,12 @@ const CURRENTS=[
 
   // ====================================================
   // GIRO DEL OCEANO INDICO
-  // EC S Ind → Mozambique/Agulhas → Circumpolar → W Australiana
+  // EC S Ind → Mozambique/Agulhas → Deriva Subantártica → W Australiana
   // ====================================================
 
   // CORRIENTE ECUATORIAL SUR INDICO (fluye W, ~10°S)
-  // NACE en [-8,118]: empalme con fin de la C. Australiana Occidental
-  // TERMINA en [-11,44]: empalme con Canal de Mozambique
+  // NACE en [-8,118]: empalme con C. Australiana Occidental
+  // TERMINA en [-11,44]: canal de Mozambique
   {cA:T.W1,cB:T.W1,n:50,s:.0012,pts:[
     [-8,118],[-10,102],[-10,85],[-10,68],[-10,54],[-11,44]
   ]},
@@ -320,10 +318,15 @@ const CURRENTS=[
     [-12,44],[-17,42],[-22,39],[-26,37],[-28,35]
   ]},
 
-  // CORRIENTE DE LAS AGUJAS / AGULHAS (cálida, fluye S a lo largo E África)
-  // TERMINA en [-57,28]: empalme con Circumpolar Antártica
+  // CORRIENTE DE LAS AGUJAS / AGULHAS (cálida, fluye S)
+  // Corriente de borde occidental del Índico
   {cA:T.W2,cB:T.M1,n:45,s:.0015,pts:[
-    [-20,38],[-25,37],[-29,33],[-33,30],[-36,26],[-38,24],[-40,21],[-50,25],[-57,28]
+    [-20,38],[-25,37],[-29,33],[-33,30],[-36,26],[-38,24],[-40,21]
+  ]},
+
+  // DERIVA SUBANTARTICA INDICO (fría, conecta Agulhas con Circumpolar)
+  {cA:T.M1,cB:T.C4,n:30,s:.001,pts:[
+    [-40,21],[-50,24],[-57,28]
   ]},
 
   // CORRIENTE ECUATORIAL NORTE INDICO (fluye W, ~10°N)
@@ -333,8 +336,8 @@ const CURRENTS=[
 
   // ====================================================
   // CORRIENTE CIRCUMPOLAR ANTARTICA (fluye E, bucle cerrado)
-  // Al sur de todos los continentes (~57-58°S)
-  // Punto de conexión entre todos los océanos
+  // Conecta todos los océanos: recibe aguas de E.Australiana, Agulhas,
+  // Brasil/Malvinas; genera Humboldt, W.Australiana
   // ====================================================
   {closed:true,n:130,s:.0007,cA:T.C4,cB:T.C4,pts:[
     [-57,-175],[-55,-148],[-57,-120],[-58,-90],[-56,-60],
