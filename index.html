@@ -8,85 +8,39 @@
     *{margin:0;padding:0;box-sizing:border-box;}
     body{background:#000;overflow:hidden;font-family:'Segoe UI',sans-serif;}
     canvas{display:block;}
-    #info{
-      position:absolute;top:20px;left:50%;transform:translateX(-50%);
-      color:#cce8ff;text-align:center;pointer-events:none;z-index:10;
-    }
+    #info{position:absolute;top:20px;left:50%;transform:translateX(-50%);color:#cce8ff;text-align:center;pointer-events:none;z-index:10;}
     #info h1{font-size:1.4rem;font-weight:300;letter-spacing:4px;text-transform:uppercase;}
     #info p{font-size:.75rem;opacity:.6;margin-top:4px;letter-spacing:1px;}
-    #controls-hint{
-      position:absolute;bottom:20px;left:50%;transform:translateX(-50%);
-      color:rgba(200,220,255,.5);font-size:.7rem;letter-spacing:2px;pointer-events:none;z-index:10;
-    }
-    #speed-control{
-      position:absolute;top:20px;right:24px;
-      display:flex;flex-direction:column;align-items:flex-end;gap:8px;z-index:10;
-    }
+    #controls-hint{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:rgba(200,220,255,.5);font-size:.7rem;letter-spacing:2px;pointer-events:none;z-index:10;}
+    #speed-control{position:absolute;top:20px;right:24px;display:flex;flex-direction:column;align-items:flex-end;gap:8px;z-index:10;}
     #speed-control label{color:rgba(200,220,255,.6);font-size:.7rem;letter-spacing:2px;}
-    #speed-control input[type=range]{
-      -webkit-appearance:none;width:120px;height:3px;
-      background:rgba(100,160,255,.4);border-radius:2px;outline:none;
-    }
-    #speed-control input[type=range]::-webkit-slider-thumb{
-      -webkit-appearance:none;width:12px;height:12px;
-      background:#4af;border-radius:50%;cursor:pointer;
-    }
-    #legend{
-      position:absolute;bottom:44px;right:20px;
-      background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.13);
-      border-radius:10px;padding:12px 16px;
-      display:flex;flex-direction:column;gap:7px;
-      pointer-events:none;z-index:10;min-width:190px;
-    }
+    #speed-control input[type=range]{-webkit-appearance:none;width:120px;height:3px;background:rgba(100,160,255,.4);border-radius:2px;outline:none;}
+    #speed-control input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;background:#4af;border-radius:50%;cursor:pointer;}
+    #legend{position:absolute;bottom:44px;right:20px;background:rgba(0,0,0,.72);border:1px solid rgba(255,255,255,.13);border-radius:10px;padding:12px 16px;display:flex;flex-direction:column;gap:7px;pointer-events:none;z-index:10;min-width:200px;}
     .leg-title{color:rgba(220,235,255,.9);font-size:.62rem;letter-spacing:2px;text-transform:uppercase;text-align:center;}
-    .leg-bar{
-      width:100%;height:9px;border-radius:5px;
-      background:linear-gradient(to right,#000e6e,#0044ff,#00ddff,#44ff88,#ccff00,#ffcc00,#ff6600,#ff1100);
-    }
+    .leg-bar{width:100%;height:9px;border-radius:5px;background:linear-gradient(to right,#000e6e,#0044ff,#00ddff,#44ff88,#ccff00,#ffcc00,#ff6600,#ff1100);}
     .leg-labels{display:flex;justify-content:space-between;color:rgba(200,220,255,.55);font-size:.58rem;letter-spacing:1px;}
     .leg-sep{border:none;border-top:1px solid rgba(255,255,255,.1);}
     .leg-row{display:flex;align-items:center;gap:8px;}
     .leg-line{width:28px;height:3px;border-radius:2px;}
     .leg-txt{color:rgba(220,235,255,.7);font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;}
-    .continent-label{
-      color:#fff;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
-      text-shadow:0 0 6px #000,0 0 12px #000,1px 1px 2px #000;
-      pointer-events:none;white-space:nowrap;transition:opacity .3s;
-    }
-    .ocean-label{
-      color:#7dd4fc;font-size:9px;font-weight:400;font-style:italic;
-      letter-spacing:3px;text-transform:uppercase;
-      text-shadow:0 0 8px rgba(0,30,80,.9),0 0 4px rgba(0,0,0,.8);
-      pointer-events:none;white-space:nowrap;transition:opacity .3s;
-    }
+    .continent-label{color:#fff;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;text-shadow:0 0 6px #000,0 0 12px #000,1px 1px 2px #000;pointer-events:none;white-space:nowrap;transition:opacity .3s;}
+    .ocean-label{color:#7dd4fc;font-size:9px;font-weight:400;font-style:italic;letter-spacing:3px;text-transform:uppercase;text-shadow:0 0 8px rgba(0,30,80,.9),0 0 4px rgba(0,0,0,.8);pointer-events:none;white-space:nowrap;transition:opacity .3s;}
   </style>
 </head>
 <body>
-<div id="info"><h1>El Mundo</h1><p>Cinta transportadora oceánica · 23.5° inclinación axial</p></div>
+<div id="info"><h1>El Mundo</h1><p>Corrientes marinas · inclinación axial real 23.5°</p></div>
 <div id="controls-hint">ARRASTRAR · RUEDA = ZOOM · DOBLE CLIC = RESET</div>
-<div id="speed-control">
-  <label>VELOCIDAD</label>
-  <input type="range" id="speedSlider" min="0" max="10" value="2" step="0.1" />
-</div>
+<div id="speed-control"><label>VELOCIDAD</label><input type="range" id="speedSlider" min="0" max="10" value="2" step="0.1"/></div>
 <div id="legend">
-  <div class="leg-title">Temperatura del agua</div>
+  <div class="leg-title">Temperatura superficial</div>
   <div class="leg-bar"></div>
-  <div class="leg-labels"><span>← Fría</span><span>Cálida →</span></div>
+  <div class="leg-labels"><span>← Fría (0°C)</span><span>Cálida (30°C) →</span></div>
   <hr class="leg-sep">
-  <div class="leg-row">
-    <div class="leg-line" style="background:linear-gradient(to right,#ff1100,#00ddff,#ff1100)"></div>
-    <span class="leg-txt">Circuito termohalino</span>
-  </div>
-  <div class="leg-row">
-    <div class="leg-line" style="background:linear-gradient(to right,#ff6600,#ff1100)"></div>
-    <span class="leg-txt">Corriente cálida</span>
-  </div>
-  <div class="leg-row">
-    <div class="leg-line" style="background:linear-gradient(to right,#0044ff,#00ddff)"></div>
-    <span class="leg-txt">Corriente fría</span>
-  </div>
+  <div class="leg-row"><div class="leg-line" style="background:linear-gradient(to right,#ff1100,#ffaa00)"></div><span class="leg-txt">Corriente cálida</span></div>
+  <div class="leg-row"><div class="leg-line" style="background:linear-gradient(to right,#0008aa,#00ccff)"></div><span class="leg-txt">Corriente fría</span></div>
+  <div class="leg-row"><div class="leg-line" style="background:linear-gradient(to right,#ff4400,#00ddff,#ff4400)"></div><span class="leg-txt">Giro oceánico (circuito)</span></div>
 </div>
-
 <script type="importmap">
 {"imports":{"three":"https://unpkg.com/three@0.158.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.158.0/examples/jsm/"}}
 </script>
@@ -97,7 +51,7 @@ import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer
 
 const BASE='https://cdn.jsdelivr.net/gh/mrdoob/three.js@r158/examples/textures/planets/';
 
-// ── RENDERERS ───────────────────────────────────────────────
+// ─ RENDERERS ────────────────────────────────────────────────
 const renderer=new THREE.WebGLRenderer({antialias:true});
 renderer.setSize(innerWidth,innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
@@ -107,7 +61,7 @@ labelRenderer.setSize(innerWidth,innerHeight);
 labelRenderer.domElement.style.cssText='position:absolute;top:0;left:0;pointer-events:none;';
 document.body.appendChild(labelRenderer.domElement);
 
-// ── ESCENA / CÁMARA / CONTROLS ────────────────────────────────
+// ─ ESCENA / CÁMARA / CONTROLS ───────────────────────────────
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.1,1000);
 camera.position.set(0,0,3.2);
@@ -116,224 +70,296 @@ controls.enableDamping=true;controls.dampingFactor=.06;
 controls.minDistance=1.5;controls.maxDistance=10;
 renderer.domElement.addEventListener('dblclick',()=>{camera.position.set(0,0,3.2);controls.target.set(0,0,0);controls.update();});
 
-// ── ESTRELLAS ─────────────────────────────────────────────────
+// ─ ESTRELLAS ───────────────────────────────────────────────
 (()=>{const N=8000,p=new Float32Array(N*3),s=new Float32Array(N);
 for(let i=0;i<N;i++){p[i*3]=(Math.random()-.5)*300;p[i*3+1]=(Math.random()-.5)*300;p[i*3+2]=(Math.random()-.5)*300;s[i]=Math.random()*1.5+.3;}
-const g=new THREE.BufferGeometry();
-g.setAttribute('position',new THREE.BufferAttribute(p,3));
-g.setAttribute('size',new THREE.BufferAttribute(s,1));
+const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(p,3));g.setAttribute('size',new THREE.BufferAttribute(s,1));
 scene.add(new THREE.Points(g,new THREE.ShaderMaterial({
 vertexShader:`attribute float size;void main(){vec4 mv=modelViewMatrix*vec4(position,1.);gl_PointSize=size*(300./-mv.z);gl_Position=projectionMatrix*mv;}`,
 fragmentShader:`void main(){float d=distance(gl_PointCoord,vec2(.5));if(d>.5)discard;gl_FragColor=vec4(1,1,1,1.-smoothstep(.3,.5,d));}`,
 transparent:true,depthWrite:false})));})();
 
-// ── TIERRA ────────────────────────────────────────────────────
-const earthGroup=new THREE.Group();
-earthGroup.rotation.z=23.5*Math.PI/180;
-scene.add(earthGroup);
+// ─ GLOBO TERRÁQUEO ────────────────────────────────────────────
+const earthGroup=new THREE.Group();earthGroup.rotation.z=23.5*Math.PI/180;scene.add(earthGroup);
 const ldr=new THREE.TextureLoader();
-const earthMesh=new THREE.Mesh(
-  new THREE.SphereGeometry(1,64,64),
-  new THREE.MeshPhongMaterial({
-    map:ldr.load(BASE+'earth_atmos_2048.jpg'),
-    bumpMap:ldr.load(BASE+'earth_normal_2048.jpg'),bumpScale:.05,
-    specularMap:ldr.load(BASE+'earth_specular_2048.jpg'),
-    specular:new THREE.Color(0x224488),shininess:15,
-  }));
+const earthMesh=new THREE.Mesh(new THREE.SphereGeometry(1,64,64),new THREE.MeshPhongMaterial({
+  map:ldr.load(BASE+'earth_atmos_2048.jpg'),bumpMap:ldr.load(BASE+'earth_normal_2048.jpg'),bumpScale:.05,
+  specularMap:ldr.load(BASE+'earth_specular_2048.jpg'),specular:new THREE.Color(0x224488),shininess:15}));
 earthGroup.add(earthMesh);
-earthGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1.025,64,64),
-  new THREE.MeshPhongMaterial({color:0x3366ff,transparent:true,opacity:.06,depthWrite:false})));
-earthGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1.12,64,64),
-  new THREE.ShaderMaterial({
-    vertexShader:`varying vec3 vN;void main(){vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
-    fragmentShader:`varying vec3 vN;void main(){float i=pow(.68-dot(vN,vec3(0,0,1)),4.);gl_FragColor=vec4(.2,.5,1,1)*i;}`,
-    blending:THREE.AdditiveBlending,side:THREE.BackSide,transparent:true,depthWrite:false})));
-earthGroup.add(new THREE.Line(
-  new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,-1.5,0),new THREE.Vector3(0,1.5,0)]),
-  new THREE.LineBasicMaterial({color:0xffffff,opacity:.15,transparent:true})));
+earthGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1.025,64,64),new THREE.MeshPhongMaterial({color:0x3366ff,transparent:true,opacity:.06,depthWrite:false})));
+earthGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1.12,64,64),new THREE.ShaderMaterial({
+  vertexShader:`varying vec3 vN;void main(){vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`varying vec3 vN;void main(){float i=pow(.68-dot(vN,vec3(0,0,1)),4.);gl_FragColor=vec4(.2,.5,1,1)*i;}`,
+  blending:THREE.AdditiveBlending,side:THREE.BackSide,transparent:true,depthWrite:false})));
+earthGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,-1.5,0),new THREE.Vector3(0,1.5,0)]),new THREE.LineBasicMaterial({color:0xffffff,opacity:.15,transparent:true})));
 const sun=new THREE.DirectionalLight(0xffffff,2.5);sun.position.set(5,2,3);scene.add(sun);
 const fill=new THREE.DirectionalLight(0x8899cc,.6);fill.position.set(-5,-1,-3);scene.add(fill);
 scene.add(new THREE.AmbientLight(0xffffff,.5));
 
-// ── HELPER lat/lon → Vector3 ───────────────────────────────────
-function ll(lat,lon,r=1.08){
-  const phi=(90-lat)*Math.PI/180,theta=(lon+180)*Math.PI/180;
-  return new THREE.Vector3(-(r*Math.sin(phi)*Math.cos(theta)),r*Math.cos(phi),r*Math.sin(phi)*Math.sin(theta));
-}
+// ─ HELPER lat/lon → Vector3 ──────────────────────────────────
+function ll(lat,lon,r=1.08){const phi=(90-lat)*Math.PI/180,theta=(lon+180)*Math.PI/180;return new THREE.Vector3(-(r*Math.sin(phi)*Math.cos(theta)),r*Math.cos(phi),r*Math.sin(phi)*Math.sin(theta));}
 
-// ── ETIQUETAS ────────────────────────────────────────────────
+// ─ ETIQUETAS ────────────────────────────────────────────────
 const labelObjects=[];
-function addLabel(text,lat,lon,cls){
-  const d=document.createElement('div');d.className=cls;d.textContent=text;
-  const o=new CSS2DObject(d);o.position.copy(ll(lat,lon));earthMesh.add(o);labelObjects.push(o);
-}
-addLabel('NORTE AMÉRICA',48,-100,'continent-label');
-addLabel('SUR AMÉRICA',-14,-56,'continent-label');
-addLabel('EUROPA',52,18,'continent-label');
-addLabel('ÁFRICA',5,22,'continent-label');
-addLabel('ASIA',47,95,'continent-label');
-addLabel('OCEANÍA',-27,134,'continent-label');
+function addLabel(text,lat,lon,cls){const d=document.createElement('div');d.className=cls;d.textContent=text;const o=new CSS2DObject(d);o.position.copy(ll(lat,lon));earthMesh.add(o);labelObjects.push(o);}
+addLabel('NORTE AMÉRICA',48,-100,'continent-label');addLabel('SUR AMÉRICA',-14,-56,'continent-label');
+addLabel('EUROPA',52,18,'continent-label');addLabel('ÁFRICA',5,22,'continent-label');
+addLabel('ASIA',47,95,'continent-label');addLabel('OCEANÍA',-27,134,'continent-label');
 addLabel('ANTÁRTIDA',-80,0,'continent-label');
-addLabel('OCÉANO PACÍFICO NORTE',25,-155,'ocean-label');
-addLabel('OCÉANO PACÍFICO SUR',-35,-140,'ocean-label');
-addLabel('OCÉANO ATLÁNTICO NORTE',38,-38,'ocean-label');
-addLabel('OCÉANO ATLÁNTICO SUR',-30,-18,'ocean-label');
-addLabel('OCÉANO ÍNDICO',-22,75,'ocean-label');
-addLabel('OCÉANO ÁRTICO',85,0,'ocean-label');
-addLabel('OCÉANO AUSTRAL',-60,90,'ocean-label');
+addLabel('OCÉANO PACÍFICO NORTE',28,-155,'ocean-label');addLabel('OCÉANO PACÍFICO SUR',-32,-138,'ocean-label');
+addLabel('OCÉANO ATLÁNTICO NORTE',40,-35,'ocean-label');addLabel('OCÉANO ATLÁNTICO SUR',-28,-16,'ocean-label');
+addLabel('OCÉANO ÍNDICO',-20,78,'ocean-label');addLabel('OCÉANO ÁRTICO',85,0,'ocean-label');
+addLabel('OCÉANO AUSTRAL',-62,50,'ocean-label');
 
-// ── SISTEMA DE COLOR POR TEMPERATURA ───────────────────────────
-// Gradiente completo: rojo (caliente) → naranja → amarillo → verde → cian → azul (frío)
-const TEMP_STOPS=[
-  [0.00,[1.00,0.08,0.03]], // 🔴 rojo caliente (30°C+)
-  [0.10,[1.00,0.38,0.05]], // 🟠 naranja-rojo
-  [0.20,[1.00,0.72,0.10]], // 🟠 naranja (22°C)
-  [0.30,[0.88,1.00,0.15]], // 🟡 amarillo-verde (16°C)
-  [0.40,[0.15,0.95,0.65]], // 🟢 cian-verde (10°C)
-  [0.50,[0.05,0.55,1.00]], // 🔵 azul (5°C)
-  [0.62,[0.02,0.18,0.88]], // 🔵 azul intenso (2°C)
-  [0.73,[0.00,0.07,0.60]], // ⚫ azul oscuro (<0°C, profundo)
-  [0.83,[0.05,0.68,0.95]], // 🟦 cian (surgencia)
-  [0.91,[0.45,0.98,0.35]], // 🟢 verde (Pacífico calentándose)
-  [0.96,[1.00,0.72,0.12]], // 🟠 naranja (retorno)
-  [1.00,[1.00,0.08,0.03]], // 🔴 rojo (cierre del circuito)
-];
-
-function sampleGrad(t){
-  t=Math.max(0,Math.min(1,t));
-  for(let i=0;i<TEMP_STOPS.length-1;i++){
-    const [t0,c0]=TEMP_STOPS[i],[t1,c1]=TEMP_STOPS[i+1];
-    if(t<=t1){const f=(t-t0)/(t1-t0);return[c0[0]+(c1[0]-c0[0])*f,c0[1]+(c1[1]-c0[1])*f,c0[2]+(c1[2]-c0[2])*f];}
-  }
-  return TEMP_STOPS[TEMP_STOPS.length-1][1];
-}
+// ─ PALETA DE TEMPERATURA ────────────────────────────────────
+const T={
+  HOT:  [1.00,0.08,0.03],  // ~28°C  rojo caliente
+  W1:   [1.00,0.40,0.05],  // ~24°C  naranja-rojo
+  W2:   [1.00,0.68,0.10],  // ~20°C  naranja
+  W3:   [0.88,0.98,0.14],  // ~16°C  amarillo-verde
+  M1:   [0.30,0.98,0.55],  // ~12°C  verde-cian
+  M2:   [0.08,0.88,0.80],  // ~9°C   cian
+  C1:   [0.05,0.52,1.00],  // ~6°C   azul
+  C2:   [0.02,0.20,0.90],  // ~3°C   azul oscuro
+  C3:   [0.00,0.06,0.60],  // ~0°C   azul muy oscuro
+  C4:   [0.00,0.03,0.42],  // polar  casi negro-azul
+};
 function lerpRGB(a,b,t){return[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];}
 
-// ── CINTA TRANSPORTADORA OCEÁNICA (circuito cerrado completo) ────────
-// Sigue la circulación termohalina real:
-// Atlántico tropical → Gulf Stream → M. Noruego (se hunde) →
-// Aguas profundas al sur → Circumpolar → Índico/Pacífico (surge) → retorno
-const CONVEYOR=[
-  // RAMA CÁLIDA SUPERFICIAL (rojo → naranja → amarillo)
-  [12,-58],  // Atlántico Tropical (ROJO caliente)
-  [20,-78],  // Caribe
-  [25,-85],  // Golfo de México
-  [28,-80],  // Estrecho de Florida
-  [32,-79],  // Costa E EE.UU.
-  [38,-73],  // Hatteras
-  [43,-57],  // NO Atläntico (NARANJA – enfriant)
-  [48,-42],  // N Atlántico
-  [52,-30],  // (AMARILLO)
-  [56,-18],  // NE Atlántico
-  [60, -5],  // (VERDE – enfriándose)
-  [63,  3],  //
-  [67,  8],  // Mar de Noruega
-  [70, 13],  // (VERDE-CIAN – casi hundimiento)
-  // ZONA DE HUNDIMIENTO (agua se enfría, se hace densa, baja)
-  [65,  5],  // (CIAN – inicio AMOC profunda)
-  [55, -3],  // Aguas Profundas N Atlántico (AZUL)
-  [44,-12],  //
-  [30,-22],  //
-  [14,-25],  // (AZUL INTENSO)
-  [-2,-22],  //
-  [-14,-27], //
-  [-28,-37], //
-  [-40,-52], // S Atlántico (AZUL OSCURO)
-  [-53,-56], // Entrada a Circumpolar
-  // CIRCUMPOLAR ANTÁRTICA (fluye hacia el E – agua más fría)
-  [-57,-32], // (AZUL OSCURO máx)
-  [-55, -5], //
-  [-57, 18], //
-  [-55, 42], //
-  [-57, 68], // Sector Índico
-  [-55, 92], //
-  // RAMA DE SURGENCIA + RETORNO (Índico/Pacífico, calentándose)
-  [-42, 82], // Surgencia Índico (CIAN)
-  [-26, 72], //
-  [-10, 65], // (VERDE)
-  [  5, 60], // Mar Arábigo
-  [  8, 82], //
-  [  2, 97], //
-  [ -5,112], // Paso de Indonesia (VERDE-AMARILLO)
-  // RETORNO SUPERFICIAL POR EL PACÍFICO
-  [ -5,132], // Pacífico O (AMARILLO)
-  [  5,155], //
-  [ 15,170], //
-  [ 20,-170],//
-  [ 25,-148],// (NARANJA – calentándose)
-  [ 18,-126],//
-  [ 10,-100],//
-  [  8, -82],// Panamá
-  [ 10, -68],// (NARANJA-ROJO)
-  [ 12, -58], // CIERRE (ROJO)
+// ─ CORRIENTES MARINAS ──────────────────────────────────────────
+// Waypoints verificados para no cruzar continentes.
+// cA = color inicio, cB = color fin (muestra cómo se enfría o calienta el agua)
+const CURRENTS=[
+
+  // ====================================================
+  // GIRO DEL PACIFICO NORTE (sentido horario)
+  // EC N Pacífico → Kuroshio → N Pacífico → California
+  // ====================================================
+
+  // CORRIENTE ECUATORIAL NORTE PACIFICO (fluye W, ~14°N)
+  // Desde costa México (alejada de tierra), cruza Pacífico hasta Filipinas
+  {cA:T.W1,cB:T.HOT,n:55,s:.0013,pts:[
+    [14,-106],[14,-128],[14,-152],[14,-175],[14,170],[14,152],[14,137],[14,127]
+  ]},
+
+  // KUROSHIO (fluye NE a lo largo de la costa E de Japón)
+  // Japón costa E: ~140-145°E entre 30-43°N → corriente va por el Este
+  {cA:T.HOT,cB:T.W2,n:50,s:.0018,pts:[
+    [18,131],[23,129],[28,131],[33,135],[37,141],[40,148],[43,154],[45,158]
+  ]},
+
+  // CORRIENTE DEL PACIFICO NORTE (Kuroshio Extension, fluye E)
+  {cA:T.W2,cB:T.M1,n:50,s:.0013,pts:[
+    [44,158],[44,170],[44,-175],[44,-162],[44,-150],[44,-137]
+  ]},
+
+  // CORRIENTE DE ALASKA (fluye NW a lo largo de Alaska)
+  {cA:T.M1,cB:T.M2,n:45,s:.0012,pts:[
+    [43,-137],[47,-135],[51,-141],[55,-150],[56,-158],[54,-165],[52,-173]
+  ]},
+
+  // CORRIENTE DE KAMCHATKA / OYASHIO (fría, fluye S)
+  // Costa E Kamchatka: ~160-163°E; costa NE Japón: ~142-145°E
+  {cA:T.C2,cB:T.M2,n:45,s:.0015,pts:[
+    [57,162],[52,157],[47,152],[42,147],[37,143],[34,141]
+  ]},
+
+  // CORRIENTE DE CALIFORNIA (fría, fluye S)
+  // Costa O EEUU: ~124°W en 38°N, ~117°W en 32°N, ~109°W en 24°N
+  {cA:T.C1,cB:T.M2,n:50,s:.0015,pts:[
+    [50,-130],[44,-127],[38,-124],[30,-120],[23,-114],[17,-107]
+  ]},
+
+  // ====================================================
+  // GIRO DEL PACIFICO SUR (sentido anti-horario)
+  // EC S Pac → E Australiana → Viento Oeste → Humboldt
+  // ====================================================
+
+  // CORRIENTE ECUATORIAL SUR PACIFICO (fluye W, ~5°S)
+  // Se mantiene en aguas abiertas, evita Galápagos (~0°,-90°) por el sur
+  {cA:T.W1,cB:T.W1,n:55,s:.0013,pts:[
+    [-5,-82],[-5,-105],[-5,-130],[-5,-155],[-5,-175],[-5,172],[-5,155],[-5,140]
+  ]},
+
+  // CONTRACORRIENTE ECUATORIAL PACIFICO (fluye E, ~8°N)
+  {cA:T.W1,cB:T.W1,n:55,s:.0011,pts:[
+    [8,132],[8,150],[8,167],[8,-175],[8,-155],[8,-132],[8,-110],[8,-95]
+  ]},
+
+  // CORRIENTE DE AUSTRALIA ORIENTAL (cálida, fluye S)
+  // Costa E Australia: ~151-157°E entre -10 y -40°S
+  {cA:T.W1,cB:T.W3,n:45,s:.0015,pts:[
+    [-10,158],[-16,157],[-22,156],[-28,155],[-34,152],[-40,151],[-43,149]
+  ]},
+
+  // CORRIENTE DE AUSTRALIA OCCIDENTAL (fría, fluye N)
+  // Costa O Australia: ~113-115°E entre -15 y -35°S
+  {cA:T.C1,cB:T.M2,n:40,s:.0012,pts:[
+    [-35,115],[-27,113],[-20,113],[-13,116],[-8,118]
+  ]},
+
+  // CORRIENTE DE PERU / HUMBOLDT (fría, fluye N)
+  // Costa O S. América: ~70-82°W entre -45 y 0°S
+  {cA:T.C2,cB:T.M1,n:55,s:.0015,pts:[
+    [-45,-75],[-37,-73],[-28,-72],[-20,-72],[-12,-76],[-4,-81],[3,-82]
+  ]},
+
+  // ====================================================
+  // GIRO DEL ATLANTICO NORTE (sentido horario)
+  // EC N Atl → Gulf Stream → N Atlántico → Canarias
+  // ====================================================
+
+  // CORRIENTE ECUATORIAL NORTE ATLANTICO (fluye W, ~13°N)
+  // Se mantiene al sur de las Antillas Menores (~12°N, al este de -62°W)
+  {cA:T.W1,cB:T.HOT,n:50,s:.0013,pts:[
+    [13,-20],[13,-38],[13,-56],[15,-72],[19,-83]
+  ]},
+
+  // GULF STREAM (muy caliente, fluye NE a lo largo costa E EEUU)
+  // Costa E EEUU: ~79-80°W en 25-30°N; se aleja al NE pasando Hatteras
+  {cA:T.HOT,cB:T.W3,n:65,s:.0018,pts:[
+    [25,-80],[28,-79],[32,-78],[36,-74],[40,-68],[44,-58],[48,-44],
+    [51,-32],[55,-20],[58,-8],[61,2],[63,5]
+  ]},
+
+  // CORRIENTE DE NORUEGA (continuación del Gulf Stream, enfriándose)
+  {cA:T.W3,cB:T.M2,n:35,s:.0015,pts:[
+    [62,5],[65,8],[68,12],[70,15]
+  ]},
+
+  // CORRIENTE DEL LABRADOR (fría, fluye S a lo largo de Canadá)
+  // Costa labrador: ~55-60°W en 53-60°N
+  {cA:T.C3,cB:T.C1,n:45,s:.0015,pts:[
+    [75,-68],[68,-60],[60,-54],[53,-53],[47,-52],[42,-50]
+  ]},
+
+  // CORRIENTE DE GROENLANDIA ORIENTAL (fría, fluye S)
+  {cA:T.C4,cB:T.C3,n:40,s:.0014,pts:[
+    [80,-12],[73,-20],[67,-23],[61,-28],[56,-36]
+  ]},
+
+  // CORRIENTE DE CANARIAS (fría, fluye S a lo largo de W Europa/África)
+  // Costa W Iberia/África: ~9-17°W
+  {cA:T.C1,cB:T.M2,n:50,s:.0014,pts:[
+    [55,-10],[48,-12],[40,-12],[33,-14],[24,-17],[14,-18]
+  ]},
+
+  // CONTRACORRIENTE ECUATORIAL ATLANTICO (fluye E, ~5°N)
+  {cA:T.W1,cB:T.W1,n:45,s:.0011,pts:[
+    [5,-50],[5,-38],[5,-24],[5,-13],[4,-4],[4,5]
+  ]},
+
+  // CORRIENTE DE GUINEA (cálida, fluye E a lo largo de África ecuatorial)
+  {cA:T.W1,cB:T.W1,n:35,s:.001,pts:[
+    [4,-15],[3,-8],[2,-2],[1,3],[0,8]
+  ]},
+
+  // ====================================================
+  // GIRO DEL ATLANTICO SUR (sentido anti-horario)
+  // EC S Atl → Brasil → Malvinas/Circumpolar → Benguela
+  // ====================================================
+
+  // CORRIENTE ECUATORIAL SUR ATLANTICO (fluye W, ~3°S)
+  // Se detiene al llegar a la costa NE de Brasil (~35°W)
+  {cA:T.W1,cB:T.W1,n:45,s:.0012,pts:[
+    [-3,5],[-3,-12],[-4,-25],[-5,-36]
+  ]},
+
+  // CORRIENTE DE BRASIL (cálida, fluye S a lo largo de Brasil)
+  // Costa E Brasil: ~35-52°W entre -5 y -40°S
+  {cA:T.HOT,cB:T.W3,n:50,s:.0015,pts:[
+    [-5,-35],[-12,-38],[-20,-40],[-28,-46],[-35,-52],[-40,-55]
+  ]},
+
+  // CORRIENTE DE MALVINAS / FALKLAND (fría, fluye N)
+  // Costa SE S. América: ~55-65°W entre -40 y -55°S
+  {cA:T.C3,cB:T.C1,n:45,s:.0014,pts:[
+    [-55,-65],[-49,-60],[-43,-56],[-37,-54],[-32,-51]
+  ]},
+
+  // CORRIENTE DE BENGUELA (fría, fluye N a lo largo de SW África)
+  // Costa SW África: ~12-18°E entre -15 y -35°S
+  {cA:T.C2,cB:T.M2,n:45,s:.0013,pts:[
+    [-38,18],[-30,14],[-22,12],[-14,12],[-6,11]
+  ]},
+
+  // ====================================================
+  // GIRO DEL OCEANO INDICO
+  // EC S Ind → Mozambique/Agulhas → Circumpolar → W Australiana
+  // ====================================================
+
+  // CORRIENTE ECUATORIAL SUR INDICO (fluye W, ~10°S)
+  // Aguas abiertas del Índico, evita Madagascar (~-20°S,47°E)
+  {cA:T.W1,cB:T.W1,n:50,s:.0012,pts:[
+    [-10,102],[-10,85],[-10,68],[-10,54],[-11,46]
+  ]},
+
+  // CORRIENTE DEL CANAL DE MOZAMBIQUE (cálida, fluye S)
+  // Canal entre Madagascar (~44-48°E) y África (~34-38°E)
+  {cA:T.W1,cB:T.W2,n:38,s:.0012,pts:[
+    [-12,46],[-17,43],[-22,39],[-26,37],[-28,35]
+  ]},
+
+  // CORRIENTE DE LAS AGUJAS / AGULHAS (cálida, fluye S a lo largo E África)
+  // Costa E África: ~28-37°E entre -15 y -35°S
+  {cA:T.W2,cB:T.M1,n:45,s:.0015,pts:[
+    [-20,38],[-25,35],[-29,31],[-33,29],[-36,26],[-38,24],[-40,21]
+  ]},
+
+  // CORRIENTE ECUATORIAL NORTE INDICO (fluye W, ~10°N)
+  // Evita Maldivas (~5°N,73°E) yendo por el norte
+  {cA:T.W1,cB:T.W1,n:40,s:.0011,pts:[
+    [10,80],[10,70],[10,60],[10,52],[8,48]
+  ]},
+
+  // ====================================================
+  // CORRIENTE CIRCUMPOLAR ANTARTICA (fluye E, bucle cerrado)
+  // Al sur de todos los continentes (~57-58°S)
+  // Punto de conexión entre todos los océanos
+  // ====================================================
+  {closed:true,n:130,s:.0007,cA:T.C4,cB:T.C4,pts:[
+    [-57,-175],[-55,-148],[-57,-120],[-58,-90],[-56,-60],
+    [-57,-30],[-55,-2],[-57,28],[-55,58],[-57,88],[-55,118],[-57,148],[-55,175]
+  ]},
 ];
 
-// ── CORRIENTES SECUNDARIAS (alimentan el circuito) ────────────────
-const FEEDERS=[
-  // CÁLIDAS
-  {pts:[[26,-80],[32,-79],[38,-73],[44,-58],[50,-32],[56,-18],[60,-5]],cA:[1,.08,.03],cB:[1,.72,.1]},  // Gulf Stream
-  {pts:[[15,135],[22,130],[30,132],[37,141],[43,154]],cA:[1,.38,.05],cB:[1,.78,.15]},                  // Kuroshio
-  {pts:[[-15,155],[-24,153],[-34,151],[-42,149]],cA:[1,.5,.1],cB:[.88,1,.15]},                         // E. Australiana
-  {pts:[[-20,37],[-28,33],[-34,27],[-38,22],[-40,19]],cA:[1,.5,.1],cB:[.15,.95,.65]},                  // Agulhas
-  {pts:[[14,-108],[14,-140],[14,-165],[14,165],[14,140]],cA:[1,.45,.08],cB:[1,.72,.1]},                // Ecuat. N Pacífico
-  {pts:[[15,-18],[15,-35],[15,-55],[15,-75],[18,-82]],cA:[1,.45,.08],cB:[1,.38,.05]},                   // Ecuat. N Atlántico
-  // FRÍAS
-  {pts:[[78,-62],[68,-57],[58,-53],[48,-52],[42,-50]],cA:[.0,.07,.60],cB:[.05,.45,1.0]},               // Labrador
-  {pts:[[54,-130],[44,-126],[34,-122],[22,-115],[16,-107]],cA:[.02,.18,.88],cB:[.05,.70,.95]},          // California
-  {pts:[[-42,-73],[-30,-73],[-18,-73],[-6,-77],[3,-82]],cA:[.02,.18,.88],cB:[.08,.85,.9]},             // Humboldt
-  {pts:[[54,-10],[44,-12],[34,-13],[22,-17],[12,-17]],cA:[.05,.45,1.0],cB:[.05,.70,.95]},              // Canarias
-  {pts:[[-40,18],[-28,14],[-16,12],[-5,11]],cA:[.02,.18,.88],cB:[.05,.70,.95]},                        // Benguela
-  {pts:[[-55,-64],[-48,-59],[-42,-55],[-36,-52]],cA:[.0,.07,.60],cB:[.05,.45,1.0]},                    // Malvinas
-];
+// ─ CONSTRUIR LÍNEAS Y PARTÍCULAS CON GRADIENTE DE COLOR ─────────────
+const animCurrents=[];
+const R=1.027;
 
-// ── FUNCIONES PARA CONSTRUIR LÍNEAS Y PARTÍCULAS CON GRADIENTE ──────
-const animatedCurrents=[];
-const R=1.028; // radio sobre la superficie
-
-function buildLine(curve,colorFn,closed,opacity=.4){
-  const N=250;
-  const pts=curve.getPoints(N);
-  const pos=new Float32Array((N+1)*3);
-  const col=new Float32Array((N+1)*3);
-  for(let i=0;i<=N;i++){
-    const p=pts[Math.min(i,N-1)];
-    pos[i*3]=p.x;pos[i*3+1]=p.y;pos[i*3+2]=p.z;
-    const[r,g,b]=colorFn(i/N);col[i*3]=r;col[i*3+1]=g;col[i*3+2]=b;
-  }
-  const geo=new THREE.BufferGeometry();
-  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
-  geo.setAttribute('color',new THREE.BufferAttribute(col,3));
-  const mat=new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity,depthWrite:false});
-  earthMesh.add(closed?new THREE.LineLoop(geo,mat):new THREE.Line(geo,mat));
-}
-
-function buildParticles(curve,colorFn,n,speed,closed,size=.014){
-  const pos=new Float32Array(n*3);
-  const col=new Float32Array(n*3);
-  const geo=new THREE.BufferGeometry();
-  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
-  geo.setAttribute('color',new THREE.BufferAttribute(col,3));
-  const mat=new THREE.PointsMaterial({vertexColors:true,size,sizeAttenuation:true,transparent:true,opacity:.95,depthWrite:false});
-  earthMesh.add(new THREE.Points(geo,mat));
-  const offsets=Array.from({length:n},(_,i)=>i/n);
-  animatedCurrents.push({curve,geo,offsets,speed,count:n,closed,colorFn});
-}
-
-// Circuito termohalino principal
-const convVecs=CONVEYOR.map(([la,lo])=>ll(la,lo,R));
-const convCurve=new THREE.CatmullRomCurve3(convVecs,true,'catmullrom',.5);
-buildLine(convCurve,t=>sampleGrad(t),true,0.5);
-buildParticles(convCurve,t=>sampleGrad(t),200,.00095,true,.018);
-
-// Corrientes secundarias
-FEEDERS.forEach(({pts,cA,cB})=>{
+function buildCurrent({pts,cA,cB,n=50,s=.0015,closed=false}){
   const vecs=pts.map(([la,lo])=>ll(la,lo,R));
-  const curve=new THREE.CatmullRomCurve3(vecs,false,'catmullrom',.5);
-  buildLine(curve,t=>lerpRGB(cA,cB,t),false,.3);
-  buildParticles(curve,t=>lerpRGB(cA,cB,t),45,.0015,false,.012);
-});
+  const curve=new THREE.CatmullRomCurve3(vecs,closed,'catmullrom',.5);
 
-// ── ANIMACIÓN ─────────────────────────────────────────────────
+  // Línea de trayecto con gradiente
+  const NL=200,lineP=new Float32Array((NL+1)*3),lineC=new Float32Array((NL+1)*3);
+  const ptsCurve=curve.getPoints(NL);
+  for(let i=0;i<=NL;i++){
+    const p=ptsCurve[Math.min(i,NL-1)],t=i/NL;
+    lineP[i*3]=p.x;lineP[i*3+1]=p.y;lineP[i*3+2]=p.z;
+    const[r,g,b]=lerpRGB(cA,cB,t);lineC[i*3]=r;lineC[i*3+1]=g;lineC[i*3+2]=b;
+  }
+  const lg=new THREE.BufferGeometry();
+  lg.setAttribute('position',new THREE.BufferAttribute(lineP,3));
+  lg.setAttribute('color',new THREE.BufferAttribute(lineC,3));
+  earthMesh.add(closed
+    ?new THREE.LineLoop(lg,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.38,depthWrite:false}))
+    :new THREE.Line(  lg,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.38,depthWrite:false})));
+
+  // Partículas animadas con gradiente
+  const pp=new Float32Array(n*3),pc=new Float32Array(n*3);
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(pp,3));
+  geo.setAttribute('color',new THREE.BufferAttribute(pc,3));
+  earthMesh.add(new THREE.Points(geo,new THREE.PointsMaterial({vertexColors:true,size:.013,sizeAttenuation:true,transparent:true,opacity:.95,depthWrite:false})));
+
+  const offsets=Array.from({length:n},(_,i)=>i/n);
+  animCurrents.push({curve,geo,offsets,s,n,closed,cA,cB});
+}
+
+CURRENTS.forEach(buildCurrent);
+
+// ─ ANIMACIÓN ────────────────────────────────────────────────
 const speedSlider=document.getElementById('speedSlider');
 const _wp=new THREE.Vector3();
 
@@ -343,20 +369,15 @@ const _wp=new THREE.Vector3();
   controls.update();
 
   const camDir=camera.position.clone().normalize();
-  labelObjects.forEach(o=>{
-    o.getWorldPosition(_wp);
-    o.element.style.opacity=_wp.clone().normalize().dot(camDir)>.1?'1':'0';
-  });
+  labelObjects.forEach(o=>{o.getWorldPosition(_wp);o.element.style.opacity=_wp.clone().normalize().dot(camDir)>.1?'1':'0';});
 
-  animatedCurrents.forEach(({curve,geo,offsets,speed,count,closed,colorFn})=>{
-    const p=geo.attributes.position.array;
-    const c=geo.attributes.color.array;
-    for(let i=0;i<count;i++){
-      offsets[i]=(offsets[i]+speed)%1;
+  animCurrents.forEach(({curve,geo,offsets,s,n,closed,cA,cB})=>{
+    const p=geo.attributes.position.array,c=geo.attributes.color.array;
+    for(let i=0;i<n;i++){
+      offsets[i]=(offsets[i]+s)%1;
       const t=closed?offsets[i]:Math.min(offsets[i],.9999);
-      const v=curve.getPoint(t);
-      p[i*3]=v.x;p[i*3+1]=v.y;p[i*3+2]=v.z;
-      const[r,g,b]=colorFn(t);c[i*3]=r;c[i*3+1]=g;c[i*3+2]=b;
+      const v=curve.getPoint(t);p[i*3]=v.x;p[i*3+1]=v.y;p[i*3+2]=v.z;
+      const[r,g,b]=lerpRGB(cA,cB,t);c[i*3]=r;c[i*3+1]=g;c[i*3+2]=b;
     }
     geo.attributes.position.needsUpdate=true;
     geo.attributes.color.needsUpdate=true;
@@ -367,10 +388,8 @@ const _wp=new THREE.Vector3();
 })();
 
 window.addEventListener('resize',()=>{
-  camera.aspect=innerWidth/innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth,innerHeight);
-  labelRenderer.setSize(innerWidth,innerHeight);
+  camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);labelRenderer.setSize(innerWidth,innerHeight);
 });
 </script>
 </body>
