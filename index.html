@@ -106,46 +106,49 @@ addLabel('OCÉANO ÍNDICO',-20,78,'ocean-label');addLabel('OCÉANO ÁRTICO',85,0
 addLabel('OCÉANO AUSTRAL',-62,50,'ocean-label');
 
 const T={
-  HOT:  [1.00,0.08,0.03],
-  W1:   [1.00,0.40,0.05],
-  W2:   [1.00,0.68,0.10],
-  W3:   [0.88,0.98,0.14],
-  M1:   [0.30,0.98,0.55],
-  M2:   [0.08,0.88,0.80],
-  C1:   [0.05,0.52,1.00],
-  C2:   [0.02,0.20,0.90],
-  C3:   [0.00,0.06,0.60],
-  C4:   [0.00,0.03,0.42],
+  HOT:[1.00,0.08,0.03],W1:[1.00,0.40,0.05],W2:[1.00,0.68,0.10],W3:[0.88,0.98,0.14],
+  M1:[0.30,0.98,0.55],M2:[0.08,0.88,0.80],C1:[0.05,0.52,1.00],
+  C2:[0.02,0.20,0.90],C3:[0.00,0.06,0.60],C4:[0.00,0.03,0.42],
 };
 function lerpRGB(a,b,t){return[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];}
 
 const CURRENTS=[
-  // GIRO PACIFICO NORTE
+  // GIRO PACIFICO NORTE (horario)
+  // Pac.Norte termina en 44N,-137W → bifurcación: Alaska dobla NO, California dobla SE
   {cA:T.W1,cB:T.HOT,n:55,s:.0013,pts:[[14,-106],[14,-128],[14,-152],[14,-175],[14,170],[14,152],[14,137],[14,127]]},
   {cA:T.HOT,cB:T.W2,n:50,s:.0018,pts:[[18,131],[23,129],[28,131],[33,135],[37,141],[40,148],[43,154],[45,158]]},
   {cA:T.W2,cB:T.M1,n:50,s:.0013,pts:[[44,158],[44,170],[44,-175],[44,-162],[44,-150],[44,-137]]},
   {cA:T.M1,cB:T.M2,n:45,s:.0012,pts:[[43,-137],[47,-135],[51,-141],[55,-150],[56,-158],[54,-165],[52,-173]]},
   {cA:T.C2,cB:T.M2,n:45,s:.0015,pts:[[57,162],[52,157],[47,152],[42,147],[37,143],[34,141]]},
-  {cA:T.C1,cB:T.M2,n:50,s:.0015,pts:[[50,-130],[44,-127],[38,-124],[30,-120],[23,-114],[17,-107]]},
-  // GIRO PACIFICO SUR
+  // California: nace en bifurcacion con Alaska en 44N,-137W
+  {cA:T.C1,cB:T.M2,n:50,s:.0015,pts:[[44,-137],[44,-128],[38,-124],[30,-120],[23,-114],[17,-107]]},
+  // GIRO PACIFICO SUR (anti-horario)
   {cA:T.W1,cB:T.W1,n:55,s:.0013,pts:[[-5,-82],[-5,-105],[-5,-130],[-5,-155],[-5,-175],[-5,172],[-5,155],[-5,140]]},
   {cA:T.W1,cB:T.W1,n:55,s:.0011,pts:[[8,132],[8,150],[8,167],[8,-175],[8,-155],[8,-132],[8,-110],[8,-95]]},
   {cA:T.W1,cB:T.W3,n:45,s:.0015,pts:[[-10,158],[-16,157],[-22,156],[-28,155],[-34,152],[-40,151],[-43,149]]},
   {cA:T.C1,cB:T.M2,n:40,s:.0012,pts:[[-35,115],[-27,113],[-20,113],[-13,116],[-8,118]]},
   {cA:T.C2,cB:T.M1,n:55,s:.0015,pts:[[-45,-75],[-37,-73],[-28,-72],[-20,-72],[-12,-76],[-4,-81],[3,-82]]},
-  // GIRO ATLANTICO NORTE
+  // GIRO ATLANTICO NORTE (horario)
+  // Ec.Norte termina en 10N,-60W → alimenta C.Guayanas
   {cA:T.W1,cB:T.HOT,n:50,s:.0013,pts:[[13,-20],[13,-38],[13,-56],[10,-60]]},
-  {cA:T.W1,cB:T.HOT,n:55,s:.0015,pts:[[8,-52],[10,-60],[11,-65],[12,-72],[13,-77],[15,-82],[18,-87]]},
+  // Guayanas: nace en bifurcacion 5S,36W (mismo punto que Brasil) → sube N y luego NO
+  {cA:T.W1,cB:T.HOT,n:60,s:.0015,pts:[[-3,-36],[1,-46],[5,-55],[8,-59],[10,-62],[11,-65],[12,-72],[13,-77],[15,-82],[18,-87]]},
+  // Gulf Stream: Canal Yucatan → Florida → NE Atlantico (pasa por 55N,-20W)
   {cA:T.HOT,cB:T.W3,n:65,s:.0018,pts:[[21,-86],[24,-82],[25,-79],[28,-79],[32,-78],[36,-74],[40,-68],[44,-58],[48,-44],[51,-32],[55,-20],[58,-8],[61,2],[63,5]]},
+  // Noruega: continua desde donde termina Gulf Stream
   {cA:T.W3,cB:T.M2,n:35,s:.0015,pts:[[62,5],[65,8],[68,12],[70,15]]},
   {cA:T.C3,cB:T.C1,n:45,s:.0015,pts:[[75,-68],[68,-60],[60,-54],[53,-53],[47,-52],[42,-50]]},
   {cA:T.C4,cB:T.C3,n:40,s:.0014,pts:[[80,-12],[73,-20],[67,-23],[61,-28],[56,-36]]},
-  {cA:T.C1,cB:T.M2,n:50,s:.0014,pts:[[55,-13],[48,-12],[40,-12],[33,-14],[24,-17],[14,-18]]},
+  // Canarias: nace en bifurcacion 55N,-20W (mismo punto en ruta Gulf Stream) → dobla S
+  {cA:T.C1,cB:T.M2,n:50,s:.0014,pts:[[55,-20],[50,-14],[43,-12],[36,-12],[28,-15],[20,-18],[14,-18]]},
   {cA:T.W1,cB:T.W1,n:45,s:.0011,pts:[[5,-50],[5,-38],[5,-24],[5,-13],[4,-4],[4,5]]},
   {cA:T.W1,cB:T.W1,n:35,s:.001,pts:[[4,-15],[3,-8],[2,-2],[1,3],[0,5]]},
-  // GIRO ATLANTICO SUR
+  // GIRO ATLANTICO SUR (anti-horario)
+  // Ec.Sur termina en 5S,-36W → bifurcacion: Guayanas sube N, Brasil dobla S
   {cA:T.W1,cB:T.W1,n:45,s:.0012,pts:[[-3,5],[-3,-12],[-4,-25],[-5,-36]]},
-  {cA:T.HOT,cB:T.W3,n:50,s:.0015,pts:[[-5,-33],[-12,-36],[-20,-40],[-28,-46],[-35,-52],[-38,-52]]},
+  // Brasil: rama S de bifurcacion en 5S,-36W
+  {cA:T.HOT,cB:T.W3,n:50,s:.0015,pts:[[-5,-36],[-12,-36],[-20,-40],[-28,-46],[-35,-52],[-38,-52]]},
+  // Malvinas + confluencia en 38S,-52W
   {cA:T.C3,cB:T.C1,n:50,s:.0014,pts:[[-55,-65],[-50,-61],[-44,-57],[-40,-54],[-38,-52]]},
   {cA:T.M1,cB:T.C1,n:70,s:.0013,pts:[[-38,-52],[-39,-42],[-40,-30],[-40,-18],[-39,-6],[-38,6],[-38,18]]},
   {cA:T.C2,cB:T.M2,n:45,s:.0013,pts:[[-38,18],[-30,14],[-22,12],[-14,10],[-6,9]]},
@@ -160,7 +163,6 @@ const CURRENTS=[
 
 const animCurrents=[];
 const R=1.027;
-
 function buildCurrent({pts,cA,cB,n=50,s=.0015,closed=false}){
   const vecs=pts.map(([la,lo])=>ll(la,lo,R));
   const curve=new THREE.CatmullRomCurve3(vecs,closed,'catmullrom',.5);
@@ -185,12 +187,10 @@ function buildCurrent({pts,cA,cB,n=50,s=.0015,closed=false}){
   const offsets=Array.from({length:n},(_,i)=>i/n);
   animCurrents.push({curve,geo,offsets,s,n,closed,cA,cB});
 }
-
 CURRENTS.forEach(buildCurrent);
 
 const speedSlider=document.getElementById('speedSlider');
 const _wp=new THREE.Vector3();
-
 (function animate(){
   requestAnimationFrame(animate);
   earthMesh.rotation.y+=parseFloat(speedSlider.value)*.001;
@@ -211,7 +211,6 @@ const _wp=new THREE.Vector3();
   renderer.render(scene,camera);
   labelRenderer.render(scene,camera);
 })();
-
 window.addEventListener('resize',()=>{
   camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
   renderer.setSize(innerWidth,innerHeight);labelRenderer.setSize(innerWidth,innerHeight);
