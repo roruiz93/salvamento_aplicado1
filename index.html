@@ -177,8 +177,9 @@ const CURRENTS=[
   // ====================================================
 
   // CORRIENTE ECUATORIAL SUR PACIFICO (fluye W, ~5°S)
-  // Se mantiene en aguas abiertas, evita Galápagos (~0°,-90°) por el sur
-  {cA:T.W1,cB:T.W1,n:55,s:.0013,pts:[
+  // NACE en [-5,-82]: bifurcación donde Humboldt dobla W → agua fría se va calentando
+  // al cruzar el Pacífico hacia Australia (M1→W1: verde-cian a naranja)
+  {cA:T.M1,cB:T.W1,n:55,s:.0013,pts:[
     [-5,-82],[-5,-105],[-5,-130],[-5,-155],[-5,-175],[-5,172],[-5,155],[-5,140]
   ]},
 
@@ -199,10 +200,10 @@ const CURRENTS=[
     [-35,115],[-27,113],[-20,113],[-13,116],[-8,118]
   ]},
 
-  // CORRIENTE DE PERU / HUMBOLDT (fría, fluye N)
-  // Costa O S. América: ~70-82°W entre -45 y 0°S
+  // CORRIENTE DE PERU / HUMBOLDT (fría, fluye N luego dobla W al llegar al ecuador)
+  // Termina en [-5,-82]: mismo punto de inicio de la Ecuatorial Sur → conexión fría→cálida
   {cA:T.C2,cB:T.M1,n:55,s:.0015,pts:[
-    [-45,-75],[-37,-73],[-28,-72],[-20,-72],[-12,-76],[-4,-81],[3,-82]
+    [-45,-75],[-37,-73],[-28,-72],[-20,-72],[-12,-78],[-4,-81],[-5,-82]
   ]},
 
   // ====================================================
