@@ -145,7 +145,7 @@ const CURRENTS=[
   // KUROSHIO (fluye NE a lo largo de la costa E de Japón)
   // Japón costa E: ~140-145°E entre 30-43°N → corriente va por el Este
   {cA:T.HOT,cB:T.W2,n:50,s:.0018,pts:[
-    [18,131],[23,129],[28,131],[33,135],[37,141],[40,148],[43,154],[45,158]
+    [14,127],[23,129],[28,131],[33,135],[37,141],[40,148],[43,154],[45,158]
   ]},
 
   // CORRIENTE DEL PACIFICO NORTE (Kuroshio Extension, fluye E)
@@ -168,7 +168,7 @@ const CURRENTS=[
   // NACE en ~44°N,-137°W: bifurcación del Pacífico Norte (termina ahí)
   // Alaska dobla NO desde ese mismo punto; California dobla SE hacia la costa
   {cA:T.C1,cB:T.M2,n:50,s:.0015,pts:[
-    [44,-137],[44,-128],[38,-124],[30,-120],[23,-114],[17,-107]
+    [44,-137],[44,-128],[38,-124],[30,-120],[23,-114],[17,-107],[14,-106]
   ]},
 
   // ====================================================
@@ -180,7 +180,7 @@ const CURRENTS=[
   // NACE en [-5,-82]: bifurcación donde Humboldt dobla W → agua fría se va calentando
   // al cruzar el Pacífico hacia Australia (M1→W1: verde-cian a naranja)
   {cA:T.M1,cB:T.W1,n:55,s:.0013,pts:[
-    [-5,-82],[-5,-105],[-5,-130],[-5,-155],[-5,-175],[-5,172],[-5,155],[-5,140]
+    [-5,-82],[-5,-105],[-5,-130],[-5,-155],[-5,-175],[-5,172],[-5,155],[-12,148]
   ]},
 
   // CONTRACORRIENTE ECUATORIAL PACIFICO (fluye E, ~8°N)
@@ -191,7 +191,7 @@ const CURRENTS=[
   // CORRIENTE DE AUSTRALIA ORIENTAL (cálida, fluye S)
   // Costa E Australia: ~151-157°E entre -10 y -40°S
   {cA:T.W1,cB:T.W3,n:45,s:.0015,pts:[
-    [-10,158],[-16,157],[-22,156],[-28,155],[-34,152],[-40,151],[-43,149]
+    [-12,148],[-16,157],[-22,156],[-28,155],[-34,152],[-40,151],[-43,149],[-57,148]
   ]},
 
   // CORRIENTE DE AUSTRALIA OCCIDENTAL (fría, fluye N)
@@ -202,8 +202,8 @@ const CURRENTS=[
 
   // CORRIENTE DE PERU / HUMBOLDT (fría, fluye N luego dobla W al llegar al ecuador)
   // Termina en [-5,-82]: mismo punto de inicio de la Ecuatorial Sur → conexión fría→cálida
-  {cA:T.C2,cB:T.M1,n:55,s:.0015,pts:[
-    [-45,-75],[-37,-73],[-28,-72],[-20,-72],[-12,-78],[-4,-81],[-5,-82]
+  {cA:T.C3,cB:T.M1,n:55,s:.0015,pts:[
+    [-58,-90],[-52,-80],[-45,-75],[-37,-73],[-28,-72],[-20,-72],[-12,-78],[-4,-81],[-5,-82]
   ]},
 
   // ====================================================
@@ -214,14 +214,14 @@ const CURRENTS=[
   // CORRIENTE ECUATORIAL NORTE ATLANTICO (fluye W, ~13°N)
   // Termina cerca de Guyana/Trinidad donde nace la C. de las Guayanas
   {cA:T.W1,cB:T.HOT,n:50,s:.0013,pts:[
-    [13,-20],[13,-38],[13,-56],[10,-60]
+    [13,-20],[13,-38],[13,-56],[10,-62]
   ]},
 
   // CORRIENTE DE LAS GUAYANAS (cálida, fluye NO por la costa N de S. América)
   // NACE en el mismo punto que Brasil (~5°S,36°W) como rama N de la bifurcación
   // del Ecuatorial Sur: Brasil dobla S, Guayanas sube N y luego NO hacia Caribe
   {cA:T.W1,cB:T.HOT,n:60,s:.0015,pts:[
-    [-3,-36],[1,-46],[5,-55],[8,-59],[10,-62],[11,-65],[12,-72],[13,-77],[15,-82],[18,-87]
+    [-3,-36],[1,-46],[5,-55],[8,-59],[10,-62],[11,-65],[12,-72],[13,-77],[15,-82],[18,-87],[21,-86]
   ]},
 
   // GULF STREAM (muy caliente, fluye NE a lo largo costa E EEUU)
@@ -251,7 +251,7 @@ const CURRENTS=[
   // NACE en ~55°N,-20°W: bifurcación del Gulf Stream (pasa por ese punto)
   // La rama NE sigue como C. de Noruega; la rama S dobla acá como Canarias
   {cA:T.C1,cB:T.M2,n:50,s:.0014,pts:[
-    [55,-20],[50,-14],[43,-12],[36,-12],[28,-15],[20,-18],[14,-18]
+    [55,-20],[50,-14],[43,-12],[36,-12],[28,-15],[20,-18],[13,-20]
   ]},
 
   // CONTRACORRIENTE ECUATORIAL ATLANTICO (fluye E, ~5°N)
@@ -297,7 +297,7 @@ const CURRENTS=[
   // CORRIENTE DE BENGUELA (fría, fluye N a lo largo de SW África)
   // Costa SW África: ~10-18°E entre -15 y -35°S
   {cA:T.C2,cB:T.M2,n:45,s:.0013,pts:[
-    [-38,18],[-30,14],[-22,12],[-14,10],[-6,9]
+    [-38,18],[-30,14],[-22,12],[-14,10],[-6,9],[-3,5]
   ]},
 
   // ====================================================
@@ -308,7 +308,7 @@ const CURRENTS=[
   // CORRIENTE ECUATORIAL SUR INDICO (fluye W, ~10°S)
   // Aguas abiertas del Índico, entra al canal por el norte de Madagascar
   {cA:T.W1,cB:T.W1,n:50,s:.0012,pts:[
-    [-10,102],[-10,85],[-10,68],[-10,54],[-11,44]
+    [-8,118],[-10,102],[-10,85],[-10,68],[-10,54],[-11,44]
   ]},
 
   // CORRIENTE DEL CANAL DE MOZAMBIQUE (cálida, fluye S)
@@ -320,7 +320,7 @@ const CURRENTS=[
   // CORRIENTE DE LAS AGUJAS / AGULHAS (cálida, fluye S a lo largo E África)
   // Costa E África: ~30-38°E entre -20 y -40°S, offshore de Mozambique y KZN
   {cA:T.W2,cB:T.M1,n:45,s:.0015,pts:[
-    [-20,38],[-25,37],[-29,33],[-33,30],[-36,26],[-38,24],[-40,21]
+    [-20,38],[-25,37],[-29,33],[-33,30],[-36,26],[-38,24],[-40,21],[-50,25],[-57,28]
   ]},
 
   // CORRIENTE ECUATORIAL NORTE INDICO (fluye W, ~10°N)
