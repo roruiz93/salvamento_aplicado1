@@ -158,6 +158,12 @@ const CURRENTS=[
     [43,-137],[47,-135],[51,-141],[55,-150],[56,-158],[54,-165],[52,-173]
   ]},
 
+  // CONECTOR ALASKA → KAMCHATKA (cierra giro subpolar N Pacífico)
+  // Alaska dobla W por las Aleutianas y enlaza con el inicio de Oyashio
+  {cA:T.M2,cB:T.C2,n:25,s:.001,pts:[
+    [52,-173],[55,177],[57,162]
+  ]},
+
   // CORRIENTE DE KAMCHATKA / OYASHIO (fría, fluye S)
   // Costa E Kamchatka: ~160-163°E; costa NE Japón: ~142-145°E
   {cA:T.C2,cB:T.M2,n:45,s:.0015,pts:[
@@ -193,6 +199,11 @@ const CURRENTS=[
   // CONTRACORRIENTE ECUATORIAL PACIFICO (fluye E, ~8°N)
   {cA:T.W1,cB:T.W1,n:55,s:.0011,pts:[
     [8,132],[8,150],[8,167],[8,-175],[8,-155],[8,-132],[8,-110],[8,-95]
+  ]},
+
+  // CONECTOR NECC PAC → EC N. PACIFICO (retorno frente a Costa Rica)
+  {cA:T.W1,cB:T.W1,n:20,s:.0012,pts:[
+    [8,-95],[11,-98],[14,-106]
   ]},
 
   // CORRIENTE DE AUSTRALIA ORIENTAL (cálida, fluye S)
@@ -249,14 +260,24 @@ const CURRENTS=[
   ]},
 
   // CORRIENTE DEL LABRADOR (fría, fluye S a lo largo de Canadá)
-  // Costa labrador: ~55-60°W en 53-60°N
+  // Nace en [72,-56] donde termina la C. de Groenlandia Occidental (Estrecho de Davis)
   {cA:T.C3,cB:T.C1,n:45,s:.0015,pts:[
-    [75,-68],[68,-60],[60,-54],[53,-53],[47,-52],[42,-50]
+    [72,-56],[68,-60],[60,-54],[53,-53],[47,-52],[42,-50]
+  ]},
+
+  // CORRIENTE ARTICA / NAC PROFUNDA (Noruega → Ártico → inicio Groenlandia Oriental)
+  {cA:T.M2,cB:T.C3,n:35,s:.0012,pts:[
+    [70,15],[73,20],[77,0],[80,-5],[80,-12]
   ]},
 
   // CORRIENTE DE GROENLANDIA ORIENTAL (fría, fluye S)
   {cA:T.C4,cB:T.C3,n:40,s:.0014,pts:[
     [80,-12],[73,-20],[67,-23],[61,-28],[56,-36]
+  ]},
+
+  // CORRIENTE DE GROENLANDIA OCCIDENTAL (fría, rodea Cabo Farewell hacia el N)
+  {cA:T.C3,cB:T.C2,n:35,s:.0013,pts:[
+    [56,-36],[59,-44],[62,-48],[65,-51],[68,-53],[72,-56]
   ]},
 
   // CORRIENTE DE CANARIAS (fría, fluye S a lo largo de W Europa/África)
@@ -274,13 +295,15 @@ const CURRENTS=[
   ]},
 
   // CONTRACORRIENTE ECUATORIAL ATLANTICO (fluye E, ~5°N)
+  // Termina en 15°W donde empalma con la Corriente de Guinea
   {cA:T.W1,cB:T.W1,n:45,s:.0011,pts:[
-    [5,-50],[5,-38],[5,-24],[5,-13],[4,-4],[4,5]
+    [5,-50],[5,-38],[5,-24],[4,-15]
   ]},
 
-  // CORRIENTE DE GUINEA (cálida, fluye E a lo largo de África ecuatorial)
+  // CORRIENTE DE GUINEA (cálida, fluye E en el Golfo de Guinea)
+  // Nace donde termina la NECC Atlántico [4,-15] y desemboca en el inicio de la EC Sur Atlántico
   {cA:T.W1,cB:T.W1,n:35,s:.001,pts:[
-    [4,-15],[3,-8],[2,-2],[1,3],[0,5]
+    [4,-15],[3,-8],[2,-2],[1,3],[0,5],[-3,5]
   ]},
 
   // ====================================================
@@ -302,9 +325,9 @@ const CURRENTS=[
   ]},
 
   // CORRIENTE DE MALVINAS / FALKLAND (fría, fluye N y se desvía al E)
-  // Confluye con Brasil ~38°S cerca de Buenos Aires, ambas giran al E
+  // Nace en [-56,-60] (waypoint de la Circumpolar) y confluye con Brasil ~38°S
   {cA:T.C3,cB:T.C1,n:50,s:.0014,pts:[
-    [-55,-65],[-50,-61],[-44,-57],[-40,-54],[-38,-52]
+    [-56,-60],[-50,-61],[-44,-57],[-40,-54],[-38,-52]
   ]},
 
   // CORRIENTE DEL ATLÁNTICO SUR (fría-templada, fluye E desde confluencia → SW África)
@@ -331,15 +354,15 @@ const CURRENTS=[
   ]},
 
   // CORRIENTE DEL CANAL DE MOZAMBIQUE (cálida, fluye S)
-  // Canal entre Madagascar (~44°E) y África (~35°E), ~42°E de media
+  // Nace en [-11,44] donde termina la Ecuatorial Sur Índico
   {cA:T.W1,cB:T.W2,n:38,s:.0012,pts:[
-    [-12,44],[-17,42],[-22,39],[-26,37],[-28,35]
+    [-11,44],[-17,42],[-22,39],[-26,37],[-28,35]
   ]},
 
   // CORRIENTE DE LAS AGUJAS / AGULHAS (cálida, fluye S a lo largo E África)
-  // Costa E África: ~30-38°E entre -20 y -40°S, offshore de Mozambique y KZN
+  // Nace donde termina Mozambique [-28,35], rodea el Cabo de las Agujas
   {cA:T.W2,cB:T.M1,n:45,s:.0015,pts:[
-    [-20,38],[-25,37],[-29,33],[-33,30],[-36,26],[-38,24],[-40,21]
+    [-28,35],[-30,33],[-33,30],[-36,26],[-38,24],[-40,21]
   ]},
 
   // DERIVA SUBANTARTICA INDICO (fría, conecta Agulhas con Circumpolar)
@@ -347,10 +370,22 @@ const CURRENTS=[
     [-40,21],[-50,24],[-57,28]
   ]},
 
+  // CORRIENTE DEL INDICO SUR (fluye E, ~40°S, cierra giro anticiclónico)
+  // Une el retroflejo de Agulhas [-40,21] con el inicio de la C. W Australiana [-35,115]
+  {cA:T.M1,cB:T.M2,n:55,s:.001,pts:[
+    [-40,21],[-40,40],[-40,60],[-40,82],[-40,100],[-36,108],[-35,115]
+  ]},
+
   // CORRIENTE ECUATORIAL NORTE INDICO (fluye W, ~10°N)
   // Evita Maldivas (~5°N,73°E) yendo por el norte
   {cA:T.W1,cB:T.W1,n:40,s:.0011,pts:[
     [10,80],[10,70],[10,60],[10,52],[8,48]
+  ]},
+
+  // CORRIENTE DE SOMALIA (cierra circuito N Índico)
+  // El agua de la EC Norte Índico baja por la costa de Somalia hasta unirse con la EC Sur
+  {cA:T.W1,cB:T.W1,n:35,s:.0012,pts:[
+    [8,48],[4,46],[1,44],[-3,43],[-7,44],[-11,44]
   ]},
 
   // ====================================================
