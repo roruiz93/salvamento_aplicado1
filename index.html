@@ -26,6 +26,26 @@
     .leg-txt{color:rgba(220,235,255,.7);font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;}
     .continent-label{color:#fff;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;text-shadow:0 0 6px #000,0 0 12px #000,1px 1px 2px #000;pointer-events:none;white-space:nowrap;transition:opacity .3s;}
     .ocean-label{color:#7dd4fc;font-size:9px;font-weight:400;font-style:italic;letter-spacing:3px;text-transform:uppercase;text-shadow:0 0 8px rgba(0,30,80,.9),0 0 4px rgba(0,0,0,.8);pointer-events:none;white-space:nowrap;transition:opacity .3s;}
+    #filter-controls{position:absolute;top:74px;left:20px;display:flex;flex-direction:row;gap:8px;z-index:10;}
+    .fbtn{padding:6px 14px;border:1px solid rgba(255,255,255,.22);border-radius:14px;background:rgba(0,0,0,.68);color:rgba(200,220,255,.65);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;font-family:inherit;}
+    .fbtn:hover{background:rgba(255,255,255,.09);}
+    .fbtn.act{border-color:rgba(255,255,255,.45);color:#fff;background:rgba(255,255,255,.1);}
+    #btn-warm.act{background:rgba(255,100,20,.22);border-color:rgba(255,150,50,.6);color:#ffb870;}
+    #btn-cold.act{background:rgba(20,100,255,.18);border-color:rgba(80,160,255,.55);color:#88ccff;}
+    #cur-panel{position:absolute;top:118px;left:20px;width:262px;max-height:calc(100vh - 196px);background:rgba(0,0,0,.84);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:14px 15px;overflow-y:auto;z-index:10;display:none;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent;}
+    #cur-panel::-webkit-scrollbar{width:4px;}
+    #cur-panel::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:2px;}
+    .cp-ttl{font-size:.6rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.12);text-align:center;}
+    .cp-ttl.w{color:#ffb870;}
+    .cp-ttl.c{color:#88ccff;}
+    .cp-row{display:flex;align-items:center;gap:7px;margin-top:10px;}
+    .cp-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+    .cp-nm{color:rgba(220,235,255,.85);font-size:.58rem;letter-spacing:.8px;flex:1;line-height:1.3;}
+    .cp-sv{color:rgba(200,220,255,.65);font-size:.62rem;font-weight:600;white-space:nowrap;}
+    .cp-bw{background:rgba(255,255,255,.07);border-radius:3px;height:4px;margin:3px 0 2px 14px;}
+    .cp-bf{height:4px;border-radius:3px;}
+    .cp-tr{color:rgba(180,200,230,.45);font-size:.54rem;letter-spacing:.5px;margin-left:14px;margin-bottom:2px;}
+    .cp-foot{color:rgba(180,200,230,.38);font-size:.53rem;letter-spacing:.5px;text-align:center;margin-top:12px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08);line-height:1.5;}
   </style>
 </head>
 <body>
@@ -41,6 +61,12 @@
   <div class="leg-row"><div class="leg-line" style="background:linear-gradient(to right,#0008aa,#00ccff)"></div><span class="leg-txt">Corriente fría</span></div>
   <div class="leg-row"><div class="leg-line" style="background:linear-gradient(to right,#ff4400,#00ddff,#ff4400)"></div><span class="leg-txt">Giro oceánico (circuito)</span></div>
 </div>
+<div id="filter-controls">
+  <button class="fbtn act" id="btn-all">TODAS</button>
+  <button class="fbtn" id="btn-warm">CÁLIDAS</button>
+  <button class="fbtn" id="btn-cold">FRÍAS</button>
+</div>
+<div id="cur-panel"></div>
 <script type="importmap">
 {"imports":{"three":"https://unpkg.com/three@0.158.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.158.0/examples/jsm/"}}
 </script>
@@ -113,335 +139,166 @@ addLabel('OCÉANO AUSTRAL',-62,50,'ocean-label');
 
 // ─ PALETA DE TEMPERATURA ────────────────────────────────────
 const T={
-  HOT:  [1.00,0.08,0.03],  // ~28°C  rojo caliente
-  W1:   [1.00,0.40,0.05],  // ~24°C  naranja-rojo
-  W2:   [1.00,0.68,0.10],  // ~20°C  naranja
-  W3:   [0.88,0.98,0.14],  // ~16°C  amarillo-verde
-  M1:   [0.30,0.98,0.55],  // ~12°C  verde-cian
-  M2:   [0.08,0.88,0.80],  // ~9°C   cian
-  C1:   [0.05,0.52,1.00],  // ~6°C   azul
-  C2:   [0.02,0.20,0.90],  // ~3°C   azul oscuro
-  C3:   [0.00,0.06,0.60],  // ~0°C   azul muy oscuro
-  C4:   [0.00,0.03,0.42],  // polar  casi negro-azul
+  HOT:  [1.00,0.08,0.03],
+  W1:   [1.00,0.40,0.05],
+  W2:   [1.00,0.68,0.10],
+  W3:   [0.88,0.98,0.14],
+  M1:   [0.30,0.98,0.55],
+  M2:   [0.08,0.88,0.80],
+  C1:   [0.05,0.52,1.00],
+  C2:   [0.02,0.20,0.90],
+  C3:   [0.00,0.06,0.60],
+  C4:   [0.00,0.03,0.42],
 };
 function lerpRGB(a,b,t){return[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];}
 
 // ─ CORRIENTES MARINAS ──────────────────────────────────────────
-// Waypoints verificados para no cruzar continentes.
-// cA = color inicio, cB = color fin (muestra cómo se enfría o calienta el agua)
+// f:'w'=cálida  f:'c'=fría   nm=nombre display   sv=transporte Sverdrups   tr=rango temp
 const CURRENTS=[
 
-  // ====================================================
-  // GIRO DEL PACIFICO NORTE (sentido horario)
-  // EC N Pacífico → Kuroshio → N Pacífico → California
-  // ====================================================
+  // ── GIRO PACÍFICO NORTE ──────────────────────────────────────
+  {f:'w',nm:'C. Ecuatorial Norte Pacífico',sv:45,tr:'20–28 °C',
+   cA:T.W1,cB:T.HOT,n:55,s:.0013,pts:[[14,-106],[14,-128],[14,-152],[14,-175],[14,170],[14,152],[14,137],[14,127]]},
 
-  // CORRIENTE ECUATORIAL NORTE PACIFICO (fluye W, ~14°N)
-  // Desde costa México (alejada de tierra), cruza Pacífico hasta Filipinas
-  {cA:T.W1,cB:T.HOT,n:55,s:.0013,pts:[
-    [14,-106],[14,-128],[14,-152],[14,-175],[14,170],[14,152],[14,137],[14,127]
-  ]},
+  {f:'w',nm:'Kuroshio',sv:42,tr:'18–28 °C',
+   cA:T.HOT,cB:T.W2,n:50,s:.0018,pts:[[14,127],[23,129],[28,133],[34,138],[37,141],[40,148],[43,154],[45,158]]},
 
-  // KUROSHIO (fluye NE a lo largo de la costa E de Japón)
-  // Japón costa E: ~140-145°E entre 30-43°N → corriente va por el Este
-  {cA:T.HOT,cB:T.W2,n:50,s:.0018,pts:[
-    [14,127],[23,129],[28,133],[34,138],[37,141],[40,148],[43,154],[45,158]
-  ]},
+  {f:'w',nm:'C. del Pacífico Norte',sv:15,tr:'9–20 °C',
+   cA:T.W2,cB:T.M1,n:50,s:.0013,pts:[[44,158],[44,170],[44,-175],[44,-162],[44,-150],[44,-137]]},
 
-  // CORRIENTE DEL PACIFICO NORTE (Kuroshio Extension, fluye E)
-  {cA:T.W2,cB:T.M1,n:50,s:.0013,pts:[
-    [44,158],[44,170],[44,-175],[44,-162],[44,-150],[44,-137]
-  ]},
+  {f:'c',nm:'C. de Alaska',sv:5,tr:'4–12 °C',
+   cA:T.M1,cB:T.M2,n:45,s:.0012,pts:[[43,-137],[47,-135],[51,-141],[55,-150],[56,-158],[54,-165],[52,-173]]},
 
-  // CORRIENTE DE ALASKA (fluye NW a lo largo de Alaska)
-  {cA:T.M1,cB:T.M2,n:45,s:.0012,pts:[
-    [43,-137],[47,-135],[51,-141],[55,-150],[56,-158],[54,-165],[52,-173]
-  ]},
+  {f:'c',cA:T.M2,cB:T.C2,n:25,s:.001,pts:[[52,-173],[55,177],[57,162]]},
 
-  // CONECTOR ALASKA → KAMCHATKA (cierra giro subpolar N Pacífico)
-  // Alaska dobla W por las Aleutianas y enlaza con el inicio de Oyashio
-  {cA:T.M2,cB:T.C2,n:25,s:.001,pts:[
-    [52,-173],[55,177],[57,162]
-  ]},
+  {f:'c',nm:'C. de Kamchatka / Oyashio',sv:10,tr:'3–9 °C',
+   cA:T.C2,cB:T.M2,n:45,s:.0015,pts:[[57,162],[52,157],[47,152],[42,147],[37,143],[34,141]]},
 
-  // CORRIENTE DE KAMCHATKA / OYASHIO (fría, fluye S)
-  // Costa E Kamchatka: ~160-163°E; costa NE Japón: ~142-145°E
-  {cA:T.C2,cB:T.M2,n:45,s:.0015,pts:[
-    [57,162],[52,157],[47,152],[42,147],[37,143],[34,141]
-  ]},
+  {f:'c',nm:'C. Subártica N. Pacífico',sv:12,tr:'3–9 °C',
+   cA:T.C1,cB:T.C1,n:45,s:.001,pts:[[34,141],[38,155],[40,175],[40,-170],[40,-150],[44,-137]]},
 
-  // CORRIENTE SUBARTICA / TRANSICION N. PACIFICO (fría, fluye E ~40°N)
-  // Oyashio dobla al E cerca de Japón → cruza el Pacífico → inicio Corriente de California
-  {cA:T.C1,cB:T.C1,n:45,s:.001,pts:[
-    [34,141],[38,155],[40,175],[40,-170],[40,-150],[44,-137]
-  ]},
+  {f:'c',nm:'C. de California',sv:10,tr:'9–14 °C',
+   cA:T.C1,cB:T.M2,n:50,s:.0015,pts:[[44,-137],[44,-128],[38,-124],[30,-120],[23,-114],[17,-107],[14,-106]]},
 
-  // CORRIENTE DE CALIFORNIA (fría, fluye S)
-  // NACE en ~44°N,-137°W: bifurcación del Pacífico Norte (termina ahí)
-  // Alaska dobla NO desde ese mismo punto; California dobla SE hacia la costa
-  {cA:T.C1,cB:T.M2,n:50,s:.0015,pts:[
-    [44,-137],[44,-128],[38,-124],[30,-120],[23,-114],[17,-107],[14,-106]
-  ]},
+  // ── GIRO PACÍFICO SUR ─────────────────────────────────────────
+  {f:'w',nm:'C. Ecuatorial Sur Pacífico',sv:35,tr:'12–24 °C',
+   cA:T.M1,cB:T.W1,n:55,s:.0013,pts:[[-5,-82],[-5,-105],[-5,-130],[-5,-155],[-5,-175],[-5,172],[-5,155],[-12,148]]},
 
-  // ====================================================
-  // GIRO DEL PACIFICO SUR (sentido anti-horario)
-  // EC S Pac → E Australiana → Viento Oeste → Humboldt
-  // ====================================================
+  {f:'w',cA:T.HOT,cB:T.W1,n:28,s:.0012,pts:[[14,127],[11,130],[8,132]]},
 
-  // CORRIENTE ECUATORIAL SUR PACIFICO (fluye W, ~5°S)
-  // NACE en [-5,-82]: bifurcación donde Humboldt dobla W → agua fría se va calentando
-  // al cruzar el Pacífico hacia Australia (M1→W1: verde-cian a naranja)
-  {cA:T.M1,cB:T.W1,n:55,s:.0013,pts:[
-    [-5,-82],[-5,-105],[-5,-130],[-5,-155],[-5,-175],[-5,172],[-5,155],[-12,148]
-  ]},
+  {f:'w',nm:'Contracorriente Ecuatorial Pacífico',sv:25,tr:'20–24 °C',
+   cA:T.W1,cB:T.W1,n:55,s:.0011,pts:[[8,132],[8,150],[8,167],[8,-175],[8,-155],[8,-132],[8,-110],[8,-95]]},
 
-  // DESVIACION PARCIAL PAC. NORTE → CONTRACORRIENTE ECUATORIAL
-  // Parte del agua de la Ecuatorial Norte (al llegar a Filipinas) se desvía SE
-  // en lugar de subir con Kuroshio → alimenta la Contracorriente (corriente de retorno)
-  {cA:T.HOT,cB:T.W1,n:28,s:.0012,pts:[
-    [14,127],[11,130],[8,132]
-  ]},
+  {f:'w',cA:T.W1,cB:T.W1,n:20,s:.0012,pts:[[8,-95],[11,-98],[14,-106]]},
 
-  // CONTRACORRIENTE ECUATORIAL PACIFICO (fluye E, ~8°N)
-  {cA:T.W1,cB:T.W1,n:55,s:.0011,pts:[
-    [8,132],[8,150],[8,167],[8,-175],[8,-155],[8,-132],[8,-110],[8,-95]
-  ]},
+  {f:'w',cA:T.W1,cB:T.M1,n:28,s:.0013,pts:[[8,-95],[4,-92],[0,-88],[-3,-85],[-5,-82]]},
 
-  // CONECTOR NECC PAC → EC N. PACIFICO (retorno frente a Costa Rica)
-  {cA:T.W1,cB:T.W1,n:20,s:.0012,pts:[
-    [8,-95],[11,-98],[14,-106]
-  ]},
+  {f:'w',nm:'C. de Australia Oriental',sv:30,tr:'16–24 °C',
+   cA:T.W1,cB:T.W3,n:45,s:.0015,pts:[[-12,148],[-16,157],[-22,156],[-28,155],[-34,152],[-40,151],[-43,149]]},
 
-  // RAMAL SUR NECC PAC → HUMBOLDT / EC SUR (borde E del Pacífico)
-  // La NECC llega a la costa de C.América y parte gira S a lo largo de Ecuador/Perú
-  // hasta unirse con el inicio de la Ecuatorial Sur (= fin del Humboldt)
-  {cA:T.W1,cB:T.M1,n:28,s:.0013,pts:[
-    [8,-95],[4,-92],[0,-88],[-3,-85],[-5,-82]
-  ]},
+  {f:'w',cA:T.W1,cB:T.W1,n:30,s:.0012,pts:[[-12,148],[-5,147],[0,147],[4,143],[8,132]]},
 
-  // CORRIENTE DE AUSTRALIA ORIENTAL (cálida, fluye S)
-  // Costa E Australia: ~151-157°E entre -10 y -40°S
-  {cA:T.W1,cB:T.W3,n:45,s:.0015,pts:[
-    [-12,148],[-16,157],[-22,156],[-28,155],[-34,152],[-40,151],[-43,149]
-  ]},
+  {f:'c',nm:'C. Subantártica Pacífico Sur',sv:8,tr:'0–9 °C',
+   cA:T.M2,cB:T.C4,n:30,s:.001,pts:[[-43,149],[-52,148],[-57,148]]},
 
-  // RAMAL NORTE S.Ec.Pac → NECC (bifurcación en borde W del Pacífico)
-  // Al llegar a la costa de Queensland/PNG, parte del agua sube por las islas
-  // y alimenta la Contracorriente Ecuatorial por el sur
-  {cA:T.W1,cB:T.W1,n:30,s:.0012,pts:[
-    [-12,148],[-5,147],[0,147],[4,143],[8,132]
-  ]},
+  {f:'c',nm:'C. de Australia Occidental',sv:5,tr:'15–20 °C',
+   cA:T.C1,cB:T.M2,n:40,s:.0012,pts:[[-35,115],[-27,113],[-20,113],[-13,116],[-8,118]]},
 
-  // DERIVA SUBANTARTICA PAC. SUR (fría, conecta E.Australiana con Circumpolar)
-  {cA:T.M2,cB:T.C4,n:30,s:.001,pts:[
-    [-43,149],[-52,148],[-57,148]
-  ]},
+  {f:'c',nm:'C. de Humboldt / Perú',sv:20,tr:'0–12 °C',
+   cA:T.C3,cB:T.M1,n:55,s:.0015,pts:[[-58,-90],[-52,-80],[-45,-75],[-37,-73],[-28,-72],[-20,-72],[-12,-78],[-4,-81],[-5,-82]]},
 
-  // CORRIENTE DE AUSTRALIA OCCIDENTAL (fría, fluye N)
-  // Costa O Australia: ~113-115°E entre -15 y -35°S
-  {cA:T.C1,cB:T.M2,n:40,s:.0012,pts:[
-    [-35,115],[-27,113],[-20,113],[-13,116],[-8,118]
-  ]},
+  // ── GIRO ATLÁNTICO NORTE ──────────────────────────────────────
+  {f:'w',nm:'C. Ecuatorial Norte Atlántico',sv:20,tr:'20–28 °C',
+   cA:T.W1,cB:T.HOT,n:50,s:.0013,pts:[[13,-20],[13,-38],[13,-56],[10,-62]]},
 
-  // CORRIENTE DE PERU / HUMBOLDT (fría, fluye N luego dobla W al llegar al ecuador)
-  // Termina en [-5,-82]: mismo punto de inicio de la Ecuatorial Sur → conexión fría→cálida
-  {cA:T.C3,cB:T.M1,n:55,s:.0015,pts:[
-    [-58,-90],[-52,-80],[-45,-75],[-37,-73],[-28,-72],[-20,-72],[-12,-78],[-4,-81],[-5,-82]
-  ]},
+  {f:'w',nm:'C. de las Guayanas',sv:30,tr:'20–28 °C',
+   cA:T.W1,cB:T.HOT,n:60,s:.0015,pts:[[-3,-35],[1,-46],[5,-55],[8,-59],[10,-62],[11,-65],[12,-72],[13,-77],[15,-82],[18,-87],[21,-86]]},
 
-  // ====================================================
-  // GIRO DEL ATLANTICO NORTE (sentido horario)
-  // EC N Atl → Gulf Stream → N Atlántico → Canarias
-  // ====================================================
+  {f:'w',nm:'Gulf Stream',sv:100,tr:'16–28 °C',
+   cA:T.HOT,cB:T.W3,n:65,s:.0018,pts:[[21,-86],[24,-82],[25,-79],[28,-79],[32,-78],[36,-74],[40,-68],[44,-58],[48,-44],[51,-32],[55,-20],[58,-8],[61,2],[63,5]]},
 
-  // CORRIENTE ECUATORIAL NORTE ATLANTICO (fluye W, ~13°N)
-  // Termina cerca de Guyana/Trinidad donde nace la C. de las Guayanas
-  {cA:T.W1,cB:T.HOT,n:50,s:.0013,pts:[
-    [13,-20],[13,-38],[13,-56],[10,-62]
-  ]},
+  {f:'w',nm:'C. de Noruega',sv:8,tr:'9–16 °C',
+   cA:T.W3,cB:T.M2,n:35,s:.0015,pts:[[62,5],[65,8],[68,12],[70,15]]},
 
-  // CORRIENTE DE LAS GUAYANAS (cálida, fluye NO por la costa N de S. América)
-  // NACE en el mismo punto que Brasil (~5°S,36°W) como rama N de la bifurcación
-  // del Ecuatorial Sur: Brasil dobla S, Guayanas sube N y luego NO hacia Caribe
-  {cA:T.W1,cB:T.HOT,n:60,s:.0015,pts:[
-    [-3,-35],[1,-46],[5,-55],[8,-59],[10,-62],[11,-65],[12,-72],[13,-77],[15,-82],[18,-87],[21,-86]
-  ]},
+  {f:'c',nm:'C. del Labrador',sv:40,tr:'0–6 °C',
+   cA:T.C3,cB:T.C1,n:45,s:.0015,pts:[[72,-56],[68,-60],[60,-54],[53,-53],[47,-52],[42,-50]]},
 
-  // GULF STREAM (muy caliente, fluye NE a lo largo costa E EEUU)
-  // Nace en el Canal de Yucatán → Estrecho de Florida → NE Atlántico
-  {cA:T.HOT,cB:T.W3,n:65,s:.0018,pts:[
-    [21,-86],[24,-82],[25,-79],[28,-79],[32,-78],[36,-74],[40,-68],[44,-58],[48,-44],
-    [51,-32],[55,-20],[58,-8],[61,2],[63,5]
-  ]},
+  {f:'c',cA:T.M2,cB:T.C3,n:35,s:.0012,pts:[[70,15],[73,20],[77,0],[80,-5],[80,-12]]},
 
-  // CORRIENTE DE NORUEGA (continuación del Gulf Stream, enfriándose)
-  {cA:T.W3,cB:T.M2,n:35,s:.0015,pts:[
-    [62,5],[65,8],[68,12],[70,15]
-  ]},
+  {f:'c',nm:'C. de Groenlandia Oriental',sv:15,tr:'-1–0 °C',
+   cA:T.C4,cB:T.C3,n:40,s:.0014,pts:[[80,-12],[73,-20],[67,-23],[61,-28],[56,-36]]},
 
-  // CORRIENTE DEL LABRADOR (fría, fluye S a lo largo de Canadá)
-  // Nace en [72,-56] donde termina la C. de Groenlandia Occidental (Estrecho de Davis)
-  {cA:T.C3,cB:T.C1,n:45,s:.0015,pts:[
-    [72,-56],[68,-60],[60,-54],[53,-53],[47,-52],[42,-50]
-  ]},
+  {f:'c',nm:'C. de Groenlandia Occidental',sv:12,tr:'0–3 °C',
+   cA:T.C3,cB:T.C2,n:35,s:.0013,pts:[[56,-36],[59,-44],[62,-48],[65,-51],[68,-53],[72,-56]]},
 
-  // CORRIENTE ARTICA / NAC PROFUNDA (Noruega → Ártico → inicio Groenlandia Oriental)
-  {cA:T.M2,cB:T.C3,n:35,s:.0012,pts:[
-    [70,15],[73,20],[77,0],[80,-5],[80,-12]
-  ]},
+  {f:'c',nm:'C. de Canarias',sv:10,tr:'6–12 °C',
+   cA:T.C1,cB:T.M2,n:50,s:.0014,pts:[[55,-20],[50,-14],[43,-12],[36,-12],[28,-15],[20,-18],[13,-20]]},
 
-  // CORRIENTE DE GROENLANDIA ORIENTAL (fría, fluye S)
-  {cA:T.C4,cB:T.C3,n:40,s:.0014,pts:[
-    [80,-12],[73,-20],[67,-23],[61,-28],[56,-36]
-  ]},
+  {f:'w',cA:T.HOT,cB:T.W1,n:25,s:.0012,pts:[[10,-62],[8,-57],[5,-50]]},
 
-  // CORRIENTE DE GROENLANDIA OCCIDENTAL (fría, rodea Cabo Farewell hacia el N)
-  {cA:T.C3,cB:T.C2,n:35,s:.0013,pts:[
-    [56,-36],[59,-44],[62,-48],[65,-51],[68,-53],[72,-56]
-  ]},
+  {f:'w',cA:T.HOT,cB:T.W1,n:22,s:.0012,pts:[[5,-55],[5,-52],[5,-50]]},
 
-  // CORRIENTE DE CANARIAS (fría, fluye S a lo largo de W Europa/África)
-  // NACE en ~55°N,-20°W: bifurcación del Gulf Stream (pasa por ese punto)
-  // La rama NE sigue como C. de Noruega; la rama S dobla acá como Canarias
-  {cA:T.C1,cB:T.M2,n:50,s:.0014,pts:[
-    [55,-20],[50,-14],[43,-12],[36,-12],[28,-15],[20,-18],[13,-20]
-  ]},
+  {f:'w',nm:'Contracorriente Ecuatorial Atlántico',sv:10,tr:'20–24 °C',
+   cA:T.W1,cB:T.W1,n:45,s:.0011,pts:[[5,-50],[5,-38],[5,-24],[4,-15]]},
 
-  // DESVIACION PARCIAL ATL. NORTE → CONTRACORRIENTE ECUATORIAL
-  // Parte del agua Ecuatorial Norte (en el Caribe ~62°W) se desvía SE
-  // en lugar de seguir con Guayanas → alimenta la Contracorriente Atlántico
-  {cA:T.HOT,cB:T.W1,n:25,s:.0012,pts:[
-    [10,-62],[8,-57],[5,-50]
-  ]},
+  {f:'w',nm:'C. de Guinea',sv:4,tr:'22–28 °C',
+   cA:T.W1,cB:T.W1,n:35,s:.001,pts:[[4,-15],[3,-8],[2,-2],[1,3],[0,5],[-3,5]]},
 
-  // RETROFLEXION NBC / RAMAL S.Ec.Atl → NECC (bifurcación en borde W del Atlántico)
-  // La Corriente de Brasil Norte (Guayanas) retroflexiona en ~5°N
-  // devolviendo parte del agua de la Ec. Sur hacia el E para alimentar la NECC Atlántico
-  {cA:T.HOT,cB:T.W1,n:22,s:.0012,pts:[
-    [5,-55],[5,-52],[5,-50]
-  ]},
+  {f:'w',cA:T.W1,cB:T.M2,n:22,s:.0011,pts:[[0,5],[-4,8],[-8,10],[-12,10],[-14,10]]},
 
-  // CONTRACORRIENTE ECUATORIAL ATLANTICO (fluye E, ~5°N)
-  // Termina en 15°W donde empalma con la Corriente de Guinea
-  {cA:T.W1,cB:T.W1,n:45,s:.0011,pts:[
-    [5,-50],[5,-38],[5,-24],[4,-15]
-  ]},
+  // ── GIRO ATLÁNTICO SUR ─────────────────────────────────────────
+  {f:'w',nm:'C. Ecuatorial Sur Atlántico',sv:16,tr:'20–24 °C',
+   cA:T.W1,cB:T.W1,n:45,s:.0012,pts:[[-3,5],[-3,-12],[-4,-25],[-5,-35]]},
 
-  // CORRIENTE DE GUINEA (cálida, fluye E en el Golfo de Guinea)
-  // Nace donde termina la NECC Atlántico [4,-15] y desemboca en el inicio de la EC Sur Atlántico
-  {cA:T.W1,cB:T.W1,n:35,s:.001,pts:[
-    [4,-15],[3,-8],[2,-2],[1,3],[0,5],[-3,5]
-  ]},
+  {f:'w',nm:'C. de Brasil',sv:20,tr:'16–28 °C',
+   cA:T.HOT,cB:T.W3,n:50,s:.0015,pts:[[-5,-35],[-12,-36],[-20,-38],[-28,-45],[-35,-52],[-38,-52]]},
 
-  // RAMAL SUR GUINEA / NECC ATL → EC SUR (borde E del Atlántico)
-  // Al llegar al Golfo de Guinea, parte del agua gira S a lo largo del Congo/Angola
-  // hasta unirse con el inicio de la Ecuatorial Sur Atlántico (= inicio de Benguela / fin Guinea)
-  {cA:T.W1,cB:T.M2,n:22,s:.0011,pts:[
-    [0,5],[-4,8],[-8,10],[-12,10],[-14,10]
-  ]},
+  {f:'c',nm:'C. de Malvinas / Falkland',sv:40,tr:'0–6 °C',
+   cA:T.C3,cB:T.C1,n:50,s:.0014,pts:[[-56,-60],[-50,-61],[-44,-57],[-40,-54],[-38,-52]]},
 
-  // ====================================================
-  // GIRO DEL ATLANTICO SUR (sentido anti-horario)
-  // EC S Atl → Brasil → Malvinas/Circumpolar → Benguela
-  // ====================================================
+  {f:'c',nm:'C. del Atlántico Sur',sv:25,tr:'6–12 °C',
+   cA:T.M1,cB:T.C1,n:70,s:.0013,pts:[[-38,-52],[-39,-42],[-40,-30],[-40,-18],[-39,-6],[-38,6],[-38,18]]},
 
-  // CORRIENTE ECUATORIAL SUR ATLANTICO (fluye W, ~3°S)
-  // Se detiene al llegar a la costa NE de Brasil (~35°W)
-  {cA:T.W1,cB:T.W1,n:45,s:.0012,pts:[
-    [-3,5],[-3,-12],[-4,-25],[-5,-35]
-  ]},
+  {f:'c',nm:'C. de Benguela',sv:15,tr:'3–9 °C',
+   cA:T.C2,cB:T.M2,n:45,s:.0013,pts:[[-38,18],[-30,14],[-22,12],[-14,10],[-6,9],[-3,5]]},
 
-  // CORRIENTE DE BRASIL (cálida, fluye S a lo largo de Brasil)
-  // NACE en el mismo punto que Guayanas: bifurcación del Ecuatorial Sur (~5°S,36°W)
-  // Rama S dobla hacia el sur siguiendo la costa de Brasil
-  {cA:T.HOT,cB:T.W3,n:50,s:.0015,pts:[
-    [-5,-35],[-12,-36],[-20,-38],[-28,-45],[-35,-52],[-38,-52]
-  ]},
+  // ── GIRO ÍNDICO ────────────────────────────────────────────────
+  {f:'w',nm:'C. Ecuatorial Sur Índico',sv:30,tr:'20–24 °C',
+   cA:T.W1,cB:T.W1,n:50,s:.0012,pts:[[-8,118],[-10,102],[-10,85],[-10,68],[-10,54],[-11,44]]},
 
-  // CORRIENTE DE MALVINAS / FALKLAND (fría, fluye N y se desvía al E)
-  // Nace en [-56,-60] (waypoint de la Circumpolar) y confluye con Brasil ~38°S
-  {cA:T.C3,cB:T.C1,n:50,s:.0014,pts:[
-    [-56,-60],[-50,-61],[-44,-57],[-40,-54],[-38,-52]
-  ]},
+  {f:'w',nm:'C. de Mozambique',sv:20,tr:'20–24 °C',
+   cA:T.W1,cB:T.W2,n:38,s:.0012,pts:[[-11,44],[-17,42],[-22,39],[-26,37],[-28,35]]},
 
-  // CORRIENTE DEL ATLÁNTICO SUR (fría-templada, fluye E desde confluencia → SW África)
-  // Une la confluencia Brasil-Malvinas (~38°S,-52°W) con Benguela (~38°S,18°E)
-  {cA:T.M1,cB:T.C1,n:70,s:.0013,pts:[
-    [-38,-52],[-39,-42],[-40,-30],[-40,-18],[-39,-6],[-38,6],[-38,18]
-  ]},
+  {f:'w',nm:'C. de las Agujas (Agulhas)',sv:70,tr:'9–20 °C',
+   cA:T.W2,cB:T.M1,n:45,s:.0015,pts:[[-28,35],[-30,33],[-33,30],[-36,26],[-38,24],[-40,21]]},
 
-  // CORRIENTE DE BENGUELA (fría, fluye N a lo largo de SW África)
-  // Costa SW África: ~10-18°E entre -15 y -35°S
-  {cA:T.C2,cB:T.M2,n:45,s:.0013,pts:[
-    [-38,18],[-30,14],[-22,12],[-14,10],[-6,9],[-3,5]
-  ]},
+  {f:'c',cA:T.M1,cB:T.C4,n:30,s:.001,pts:[[-40,21],[-50,24],[-57,28]]},
 
-  // ====================================================
-  // GIRO DEL OCEANO INDICO
-  // EC S Ind → Mozambique/Agulhas → Circumpolar → W Australiana
-  // ====================================================
+  {f:'w',nm:'C. del Índico Sur',sv:15,tr:'9–20 °C',
+   cA:T.M1,cB:T.M2,n:55,s:.001,pts:[[-40,21],[-40,40],[-40,60],[-40,82],[-40,100],[-36,108],[-35,115]]},
 
-  // CORRIENTE ECUATORIAL SUR INDICO (fluye W, ~10°S)
-  // Aguas abiertas del Índico, entra al canal por el norte de Madagascar
-  {cA:T.W1,cB:T.W1,n:50,s:.0012,pts:[
-    [-8,118],[-10,102],[-10,85],[-10,68],[-10,54],[-11,44]
-  ]},
+  {f:'w',nm:'C. Ecuatorial Norte Índico',sv:20,tr:'20–24 °C',
+   cA:T.W1,cB:T.W1,n:40,s:.0011,pts:[[10,80],[10,70],[10,60],[10,52],[8,48]]},
 
-  // CORRIENTE DEL CANAL DE MOZAMBIQUE (cálida, fluye S)
-  // Nace en [-11,44] donde termina la Ecuatorial Sur Índico
-  {cA:T.W1,cB:T.W2,n:38,s:.0012,pts:[
-    [-11,44],[-17,42],[-22,39],[-26,37],[-28,35]
-  ]},
+  {f:'w',nm:'C. de Somalia',sv:30,tr:'20–28 °C',
+   cA:T.W1,cB:T.W1,n:35,s:.0012,pts:[[8,48],[4,46],[1,44],[-3,43],[-7,44],[-11,44]]},
 
-  // CORRIENTE DE LAS AGUJAS / AGULHAS (cálida, fluye S a lo largo E África)
-  // Nace donde termina Mozambique [-28,35], rodea el Cabo de las Agujas
-  {cA:T.W2,cB:T.M1,n:45,s:.0015,pts:[
-    [-28,35],[-30,33],[-33,30],[-36,26],[-38,24],[-40,21]
-  ]},
-
-  // DERIVA SUBANTARTICA INDICO (fría, conecta Agulhas con Circumpolar)
-  {cA:T.M1,cB:T.C4,n:30,s:.001,pts:[
-    [-40,21],[-50,24],[-57,28]
-  ]},
-
-  // CORRIENTE DEL INDICO SUR (fluye E, ~40°S, cierra giro anticiclónico)
-  // Une el retroflejo de Agulhas [-40,21] con el inicio de la C. W Australiana [-35,115]
-  {cA:T.M1,cB:T.M2,n:55,s:.001,pts:[
-    [-40,21],[-40,40],[-40,60],[-40,82],[-40,100],[-36,108],[-35,115]
-  ]},
-
-  // CORRIENTE ECUATORIAL NORTE INDICO (fluye W, ~10°N)
-  // Evita Maldivas (~5°N,73°E) yendo por el norte
-  {cA:T.W1,cB:T.W1,n:40,s:.0011,pts:[
-    [10,80],[10,70],[10,60],[10,52],[8,48]
-  ]},
-
-  // CORRIENTE DE SOMALIA (cierra circuito N Índico)
-  // El agua de la EC Norte Índico baja por la costa de Somalia hasta unirse con la EC Sur
-  {cA:T.W1,cB:T.W1,n:35,s:.0012,pts:[
-    [8,48],[4,46],[1,44],[-3,43],[-7,44],[-11,44]
-  ]},
-
-  // ====================================================
-  // CORRIENTE CIRCUMPOLAR ANTARTICA (fluye E, bucle cerrado)
-  // Al sur de todos los continentes (~57-58°S)
-  // Punto de conexión entre todos los océanos
-  // ====================================================
-  {closed:true,n:130,s:.0007,cA:T.C4,cB:T.C4,pts:[
-    [-57,-175],[-55,-148],[-57,-120],[-58,-90],[-56,-60],
-    [-57,-30],[-55,-2],[-57,28],[-55,58],[-57,88],[-55,118],[-57,148],[-55,175]
-  ]},
+  // ── CIRCUMPOLAR ────────────────────────────────────────────────
+  {f:'c',nm:'Circumpolar Antártica',sv:130,tr:'0–2 °C',
+   closed:true,n:130,s:.0007,cA:T.C4,cB:T.C4,
+   pts:[[-57,-175],[-55,-148],[-57,-120],[-58,-90],[-56,-60],[-57,-30],[-55,-2],[-57,28],[-55,58],[-57,88],[-55,118],[-57,148],[-55,175]]},
 ];
 
-// ─ CONSTRUIR LÍNEAS Y PARTÍCULAS CON GRADIENTE DE COLOR ─────────────
+// ─ CONSTRUIR LÍNEAS Y PARTÍCULAS ─────────────────────────────
 const animCurrents=[];
+const curObjects=[];
 const R=1.027;
 
-function buildCurrent({pts,cA,cB,n=50,s=.0015,closed=false}){
+function buildCurrent(cur){
+  const {pts,cA,cB,n=50,s=.0015,closed=false,f}=cur;
   const vecs=pts.map(([la,lo])=>ll(la,lo,R));
   const curve=new THREE.CatmullRomCurve3(vecs,closed,'catmullrom',.5);
 
-  // Línea de trayecto con gradiente
   const NL=200,lineP=new Float32Array((NL+1)*3),lineC=new Float32Array((NL+1)*3);
   const ptsCurve=curve.getPoints(NL);
   for(let i=0;i<=NL;i++){
@@ -452,22 +309,64 @@ function buildCurrent({pts,cA,cB,n=50,s=.0015,closed=false}){
   const lg=new THREE.BufferGeometry();
   lg.setAttribute('position',new THREE.BufferAttribute(lineP,3));
   lg.setAttribute('color',new THREE.BufferAttribute(lineC,3));
-  earthMesh.add(closed
-    ?new THREE.LineLoop(lg,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.38,depthWrite:false}))
-    :new THREE.Line(  lg,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.38,depthWrite:false})));
+  const lineMat=new THREE.LineBasicMaterial({vertexColors:true,transparent:true,opacity:.38,depthWrite:false});
+  const lineObj=closed?new THREE.LineLoop(lg,lineMat):new THREE.Line(lg,lineMat);
+  earthMesh.add(lineObj);
 
-  // Partículas animadas con gradiente
   const pp=new Float32Array(n*3),pc=new Float32Array(n*3);
   const geo=new THREE.BufferGeometry();
   geo.setAttribute('position',new THREE.BufferAttribute(pp,3));
   geo.setAttribute('color',new THREE.BufferAttribute(pc,3));
-  earthMesh.add(new THREE.Points(geo,new THREE.PointsMaterial({vertexColors:true,size:.013,sizeAttenuation:true,transparent:true,opacity:.95,depthWrite:false})));
+  const pointsObj=new THREE.Points(geo,new THREE.PointsMaterial({vertexColors:true,size:.013,sizeAttenuation:true,transparent:true,opacity:.95,depthWrite:false}));
+  earthMesh.add(pointsObj);
 
-  const offsets=Array.from({length:n},(_,i)=>i/n);
-  animCurrents.push({curve,geo,offsets,s,n,closed,cA,cB});
+  curObjects.push({lineObj,pointsObj,f:f||null});
+  animCurrents.push({curve,geo,offsets:Array.from({length:n},(_,i)=>i/n),s,n,closed,cA,cB});
 }
 
 CURRENTS.forEach(buildCurrent);
+
+// ─ FILTRO ───────────────────────────────────────────────────
+const btnAll=document.getElementById('btn-all');
+const btnWarm=document.getElementById('btn-warm');
+const btnCold=document.getElementById('btn-cold');
+const curPanel=document.getElementById('cur-panel');
+
+function setFilter(mode){
+  btnAll.classList.toggle('act',mode==='all');
+  btnWarm.classList.toggle('act',mode==='w');
+  btnCold.classList.toggle('act',mode==='c');
+  curObjects.forEach(({lineObj,pointsObj,f})=>{
+    const show=mode==='all'||f===mode;
+    lineObj.visible=show;
+    pointsObj.visible=show;
+  });
+  if(mode==='all'){curPanel.style.display='none';return;}
+  buildPanel(mode);
+}
+
+function buildPanel(mode){
+  const isW=mode==='w';
+  const named=CURRENTS.filter(c=>c.f===mode&&c.nm).sort((a,b)=>b.sv-a.sv);
+  const maxSv=named[0]?.sv||1;
+  const barCol=isW?'#ffb060':'#5aadff';
+  let h=`<div class="cp-ttl ${mode}">${isW?'CORRIENTES CÁLIDAS':'CORRIENTES FRÍAS'}</div>`;
+  named.forEach(c=>{
+    const[r,g,b]=c.cA.map(v=>Math.round(v*255));
+    const pct=Math.round(c.sv/maxSv*100);
+    h+=`<div class="cp-row"><div class="cp-dot" style="background:rgb(${r},${g},${b})"></div><span class="cp-nm">${c.nm}</span><span class="cp-sv">${c.sv} Sv</span></div>`
+      +`<div class="cp-bw"><div class="cp-bf" style="width:${pct}%;background:${barCol}"></div></div>`
+      +`<div class="cp-tr">${c.tr}</div>`;
+  });
+  const total=named.reduce((s,c)=>s+c.sv,0);
+  h+=`<div class="cp-foot">1 Sv = 1 000 000 m³/s<br>${named.length} corrientes · ${total} Sv aprox.</div>`;
+  curPanel.innerHTML=h;
+  curPanel.style.display='block';
+}
+
+btnAll.addEventListener('click',()=>setFilter('all'));
+btnWarm.addEventListener('click',()=>setFilter('w'));
+btnCold.addEventListener('click',()=>setFilter('c'));
 
 // ─ ANIMACIÓN ────────────────────────────────────────────────
 const speedSlider=document.getElementById('speedSlider');
