@@ -218,6 +218,13 @@ const CURRENTS=[
     [-12,148],[-16,157],[-22,156],[-28,155],[-34,152],[-40,151],[-43,149]
   ]},
 
+  // RAMAL NORTE S.Ec.Pac → NECC (bifurcación en borde W del Pacífico)
+  // Al llegar a la costa de Queensland/PNG, parte del agua sube por las islas
+  // y alimenta la Contracorriente Ecuatorial por el sur
+  {cA:T.W1,cB:T.W1,n:30,s:.0012,pts:[
+    [-12,148],[-5,147],[0,147],[4,143],[8,132]
+  ]},
+
   // DERIVA SUBANTARTICA PAC. SUR (fría, conecta E.Australiana con Circumpolar)
   {cA:T.M2,cB:T.C4,n:30,s:.001,pts:[
     [-43,149],[-52,148],[-57,148]
@@ -298,6 +305,13 @@ const CURRENTS=[
   // en lugar de seguir con Guayanas → alimenta la Contracorriente Atlántico
   {cA:T.HOT,cB:T.W1,n:25,s:.0012,pts:[
     [10,-62],[8,-57],[5,-50]
+  ]},
+
+  // RETROFLEXION NBC / RAMAL S.Ec.Atl → NECC (bifurcación en borde W del Atlántico)
+  // La Corriente de Brasil Norte (Guayanas) retroflexiona en ~5°N
+  // devolviendo parte del agua de la Ec. Sur hacia el E para alimentar la NECC Atlántico
+  {cA:T.HOT,cB:T.W1,n:22,s:.0012,pts:[
+    [5,-55],[5,-52],[5,-50]
   ]},
 
   // CONTRACORRIENTE ECUATORIAL ATLANTICO (fluye E, ~5°N)
