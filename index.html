@@ -51,7 +51,7 @@ import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer
 
 const BASE='https://cdn.jsdelivr.net/gh/mrdoob/three.js@r158/examples/textures/planets/';
 
-// ─ RENDERERS ────────────────────────────────────────────
+// ─ RENDERERS ────────────────────────────────────────────────
 const renderer=new THREE.WebGLRenderer({antialias:true});
 renderer.setSize(innerWidth,innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
@@ -61,7 +61,7 @@ labelRenderer.setSize(innerWidth,innerHeight);
 labelRenderer.domElement.style.cssText='position:absolute;top:0;left:0;pointer-events:none;';
 document.body.appendChild(labelRenderer.domElement);
 
-// ─ ESCENA / CÁMARA / CONTROLS ───────────────────────────────────────
+// ─ ESCENA / CÁMARA / CONTROLS ───────────────────────────────
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,.1,1000);
 camera.position.set(0,0,3.2);
@@ -79,7 +79,7 @@ vertexShader:`attribute float size;void main(){vec4 mv=modelViewMatrix*vec4(posi
 fragmentShader:`void main(){float d=distance(gl_PointCoord,vec2(.5));if(d>.5)discard;gl_FragColor=vec4(1,1,1,1.-smoothstep(.3,.5,d));}`,
 transparent:true,depthWrite:false})));})();
 
-// ─ GLOBO TERRÁQUEO ─────────────────────────────────────────────
+// ─ GLOBO TERRÁQUEO ────────────────────────────────────────────
 const earthGroup=new THREE.Group();earthGroup.rotation.z=23.5*Math.PI/180;scene.add(earthGroup);
 const ldr=new THREE.TextureLoader();
 const earthMesh=new THREE.Mesh(new THREE.SphereGeometry(1,64,64),new THREE.MeshPhongMaterial({
@@ -96,10 +96,10 @@ const sun=new THREE.DirectionalLight(0xffffff,2.5);sun.position.set(5,2,3);scene
 const fill=new THREE.DirectionalLight(0x8899cc,.6);fill.position.set(-5,-1,-3);scene.add(fill);
 scene.add(new THREE.AmbientLight(0xffffff,.5));
 
-// ─ HELPER lat/lon → Vector3 ────────────────────────────────────────────
+// ─ HELPER lat/lon → Vector3 ──────────────────────────────────
 function ll(lat,lon,r=1.08){const phi=(90-lat)*Math.PI/180,theta=(lon+180)*Math.PI/180;return new THREE.Vector3(-(r*Math.sin(phi)*Math.cos(theta)),r*Math.cos(phi),r*Math.sin(phi)*Math.sin(theta));}
 
-// ─ ETIQUETAS ──────────────────────────────────────────────
+// ─ ETIQUETAS ────────────────────────────────────────────────
 const labelObjects=[];
 function addLabel(text,lat,lon,cls){const d=document.createElement('div');d.className=cls;d.textContent=text;const o=new CSS2DObject(d);o.position.copy(ll(lat,lon));earthMesh.add(o);labelObjects.push(o);}
 addLabel('NORTE AMÉRICA',48,-100,'continent-label');addLabel('SUR AMÉRICA',-14,-56,'continent-label');
@@ -111,7 +111,7 @@ addLabel('OCÉANO ATLÁNTICO NORTE',40,-35,'ocean-label');addLabel('OCÉANO ATL�
 addLabel('OCÉANO ÍNDICO',-20,78,'ocean-label');addLabel('OCÉANO ÁRTICO',85,0,'ocean-label');
 addLabel('OCÉANO AUSTRAL',-62,50,'ocean-label');
 
-// ─ PALETA DE TEMPERATURA ──────────────────────────────────────────
+// ─ PALETA DE TEMPERATURA ────────────────────────────────────
 const T={
   HOT:  [1.00,0.08,0.03],  // ~28°C  rojo caliente
   W1:   [1.00,0.40,0.05],  // ~24°C  naranja-rojo
@@ -126,7 +126,7 @@ const T={
 };
 function lerpRGB(a,b,t){return[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];}
 
-// ─ CORRIENTES MARINAS ──────────────────────────────────────────────────────
+// ─ CORRIENTES MARINAS ──────────────────────────────────────────
 // Waypoints verificados para no cruzar continentes.
 // cA = color inicio, cB = color fin (muestra cómo se enfría o calienta el agua)
 const CURRENTS=[
@@ -210,6 +210,13 @@ const CURRENTS=[
   // CONECTOR NECC PAC → EC N. PACIFICO (retorno frente a Costa Rica)
   {cA:T.W1,cB:T.W1,n:20,s:.0012,pts:[
     [8,-95],[11,-98],[14,-106]
+  ]},
+
+  // RAMAL SUR NECC PAC → HUMBOLDT / EC SUR (borde E del Pacífico)
+  // La NECC llega a la costa de C.América y parte gira S a lo largo de Ecuador/Perú
+  // hasta unirse con el inicio de la Ecuatorial Sur (= fin del Humboldt)
+  {cA:T.W1,cB:T.M1,n:28,s:.0013,pts:[
+    [8,-95],[4,-92],[0,-88],[-3,-85],[-5,-82]
   ]},
 
   // CORRIENTE DE AUSTRALIA ORIENTAL (cálida, fluye S)
@@ -326,6 +333,13 @@ const CURRENTS=[
     [4,-15],[3,-8],[2,-2],[1,3],[0,5],[-3,5]
   ]},
 
+  // RAMAL SUR GUINEA / NECC ATL → EC SUR (borde E del Atlántico)
+  // Al llegar al Golfo de Guinea, parte del agua gira S a lo largo del Congo/Angola
+  // hasta unirse con el inicio de la Ecuatorial Sur Atlántico (= inicio de Benguela / fin Guinea)
+  {cA:T.W1,cB:T.M2,n:22,s:.0011,pts:[
+    [0,5],[-4,8],[-8,10],[-12,10],[-14,10]
+  ]},
+
   // ====================================================
   // GIRO DEL ATLANTICO SUR (sentido anti-horario)
   // EC S Atl → Brasil → Malvinas/Circumpolar → Benguela
@@ -390,7 +404,7 @@ const CURRENTS=[
     [-40,21],[-50,24],[-57,28]
   ]},
 
-  // CORRIENTE DEL INDICO SUR (fluye E, ~40°S, cierra giro anticíclónico)
+  // CORRIENTE DEL INDICO SUR (fluye E, ~40°S, cierra giro anticiclónico)
   // Une el retroflejo de Agulhas [-40,21] con el inicio de la C. W Australiana [-35,115]
   {cA:T.M1,cB:T.M2,n:55,s:.001,pts:[
     [-40,21],[-40,40],[-40,60],[-40,82],[-40,100],[-36,108],[-35,115]
@@ -419,7 +433,7 @@ const CURRENTS=[
   ]},
 ];
 
-// ─ CONSTRUIR LÍNEAS Y PARTÍCULAS CON GRADIENTE DE COLOR ─────────────────
+// ─ CONSTRUIR LÍNEAS Y PARTÍCULAS CON GRADIENTE DE COLOR ─────────────
 const animCurrents=[];
 const R=1.027;
 
@@ -455,7 +469,7 @@ function buildCurrent({pts,cA,cB,n=50,s=.0015,closed=false}){
 
 CURRENTS.forEach(buildCurrent);
 
-// ─ ANIMACIÓN ──────────────────────────────────────────────────────
+// ─ ANIMACIÓN ────────────────────────────────────────────────
 const speedSlider=document.getElementById('speedSlider');
 const _wp=new THREE.Vector3();
 
