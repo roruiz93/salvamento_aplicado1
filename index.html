@@ -46,6 +46,18 @@
     .cp-bf{height:4px;border-radius:3px;}
     .cp-tr{color:rgba(180,200,230,.45);font-size:.54rem;letter-spacing:.5px;margin-left:14px;margin-bottom:2px;}
     .cp-foot{color:rgba(180,200,230,.38);font-size:.53rem;letter-spacing:.5px;text-align:center;margin-top:12px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08);line-height:1.5;}
+    #cur-tooltip{position:absolute;z-index:20;background:rgba(0,0,0,.93);border:1px solid rgba(255,255,255,.22);border-radius:12px;padding:14px 16px;pointer-events:none;display:none;max-width:242px;}
+    .ctt-name{color:#fff;font-size:.72rem;letter-spacing:1px;font-weight:600;margin-bottom:6px;line-height:1.4;}
+    .ctt-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.54rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+    .ctt-badge.w{background:rgba(255,140,30,.25);color:#ffb870;border:1px solid rgba(255,140,30,.4);}
+    .ctt-badge.c{background:rgba(30,120,255,.2);color:#88ccff;border:1px solid rgba(30,120,255,.4);}
+    .ctt-row{display:flex;justify-content:space-between;gap:12px;margin-top:5px;}
+    .ctt-key{color:rgba(180,200,230,.5);font-size:.56rem;letter-spacing:1px;text-transform:uppercase;}
+    .ctt-val{color:rgba(220,235,255,.9);font-size:.6rem;font-weight:600;}
+    .ctt-proc{margin-top:9px;padding-top:8px;border-top:1px solid rgba(255,255,255,.1);font-size:.58rem;letter-spacing:.5px;line-height:1.55;}
+    .ctt-proc.af{color:#7fffd4;}
+    .ctt-proc.hu{color:#89b4fa;}
+    .ctt-proc.cv{color:#f9e2af;}
   </style>
 </head>
 <body>
@@ -67,6 +79,7 @@
   <button class="fbtn" id="btn-cold">FRÍAS</button>
 </div>
 <div id="cur-panel"></div>
+<div id="cur-tooltip"></div>
 <script type="importmap">
 {"imports":{"three":"https://unpkg.com/three@0.158.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.158.0/examples/jsm/"}}
 </script>
@@ -171,13 +184,13 @@ const CURRENTS=[
 
   {f:'c',cA:T.M2,cB:T.C2,n:25,s:.001,pts:[[52,-173],[55,177],[57,165]]},
 
-  {f:'c',nm:'C. de Kamchatka / Oyashio',sv:10,tr:'3–9 °C',
+  {f:'c',nm:'C. de Kamchatka / Oyashio',sv:10,tr:'3–9 °C',proceso:'convergencia',
    cA:T.C2,cB:T.M2,n:45,s:.0015,pts:[[57,165],[52,160],[47,152],[42,147],[37,143],[34,141]]},
 
   {f:'c',nm:'C. Subártica N. Pacífico',sv:12,tr:'3–9 °C',
    cA:T.C1,cB:T.C1,n:45,s:.001,pts:[[34,141],[38,155],[40,175],[40,-170],[40,-150],[44,-137]]},
 
-  {f:'c',nm:'C. de California',sv:10,tr:'9–14 °C',
+  {f:'c',nm:'C. de California',sv:10,tr:'9–14 °C',proceso:'afloramiento',
    cA:T.C1,cB:T.M2,n:50,s:.0015,pts:[[44,-137],[44,-128],[38,-124],[30,-120],[23,-114],[17,-107],[14,-106]]},
 
   // ── GIRO PACÍFICO SUR ─────────────────────────────────────────
@@ -204,7 +217,7 @@ const CURRENTS=[
   {f:'c',nm:'C. de Australia Occidental',sv:5,tr:'15–20 °C',
    cA:T.C1,cB:T.M2,n:40,s:.0012,pts:[[-35,115],[-27,113],[-20,113],[-13,116],[-8,118]]},
 
-  {f:'c',nm:'C. de Humboldt / Perú',sv:20,tr:'0–12 °C',
+  {f:'c',nm:'C. de Humboldt / Perú',sv:20,tr:'0–12 °C',proceso:'afloramiento',
    cA:T.C3,cB:T.M1,n:55,s:.0015,pts:[[-58,-90],[-52,-80],[-45,-75],[-37,-73],[-28,-72],[-20,-72],[-12,-78],[-4,-81],[-5,-82]]},
 
   // ── GIRO ATLÁNTICO NORTE ──────────────────────────────────────
@@ -212,26 +225,26 @@ const CURRENTS=[
    cA:T.W1,cB:T.HOT,n:50,s:.0013,pts:[[13,-20],[13,-38],[13,-56],[10,-62]]},
 
   {f:'w',nm:'C. de las Guayanas',sv:30,tr:'20–28 °C',
-   cA:T.W1,cB:T.HOT,n:60,s:.0015,pts:[[-5,-35],[0,-45],[2,-50],[4,-55],[7,-57],[10,-62],[11,-65],[12,-72],[13,-77],[15,-82],[18,-87],[21,-86]]},
+   cA:T.W1,cB:T.HOT,n:60,s:.0015,pts:[[-5,-38],[0,-45],[2,-50],[4,-55],[7,-57],[10,-62],[11,-65],[12,-72],[13,-77],[15,-82],[18,-87],[21,-86]]},
 
-  {f:'w',nm:'Gulf Stream',sv:100,tr:'16–28 °C',
-   cA:T.HOT,cB:T.W3,n:65,s:.0018,pts:[[21,-86],[24,-82],[25,-79],[28,-79],[32,-78],[36,-74],[40,-68],[44,-58],[48,-44],[51,-32],[55,-20],[58,-8],[61,2],[63,5]]},
+  {f:'w',nm:'Gulf Stream',sv:100,tr:'16–28 °C',proceso:'hundimiento',
+   cA:T.HOT,cB:T.W3,n:65,s:.0018,pts:[[21,-86],[23,-84],[24,-82],[25,-79],[28,-79],[32,-78],[36,-74],[40,-68],[44,-58],[48,-44],[51,-32],[55,-20],[58,-8],[61,2],[63,5]]},
 
-  {f:'w',nm:'C. de Noruega',sv:8,tr:'9–16 °C',
+  {f:'w',nm:'C. de Noruega',sv:8,tr:'9–16 °C',proceso:'hundimiento',
    cA:T.W3,cB:T.M2,n:35,s:.0015,pts:[[62,5],[65,8],[68,12],[70,15]]},
 
-  {f:'c',nm:'C. del Labrador',sv:40,tr:'0–6 °C',
+  {f:'c',nm:'C. del Labrador',sv:40,tr:'0–6 °C',proceso:'hundimiento',
    cA:T.C3,cB:T.C1,n:45,s:.0015,pts:[[72,-56],[68,-60],[60,-54],[53,-53],[47,-52],[42,-50]]},
 
   {f:'c',cA:T.M2,cB:T.C3,n:35,s:.0012,pts:[[70,15],[73,20],[77,0],[80,-5],[80,-12]]},
 
-  {f:'c',nm:'C. de Groenlandia Oriental',sv:15,tr:'-1–0 °C',
+  {f:'c',nm:'C. de Groenlandia Oriental',sv:15,tr:'-1–0 °C',proceso:'hundimiento',
    cA:T.C4,cB:T.C3,n:40,s:.0014,pts:[[80,-12],[73,-20],[67,-23],[61,-28],[56,-36]]},
 
   {f:'c',nm:'C. de Groenlandia Occidental',sv:12,tr:'0–3 °C',
    cA:T.C3,cB:T.C2,n:35,s:.0013,pts:[[56,-36],[59,-46],[62,-52],[64,-52],[66,-53],[69,-54],[72,-56]]},
 
-  {f:'c',nm:'C. de Canarias',sv:10,tr:'6–12 °C',
+  {f:'c',nm:'C. de Canarias',sv:10,tr:'6–12 °C',proceso:'afloramiento',
    cA:T.C1,cB:T.M2,n:50,s:.0014,pts:[[55,-20],[50,-14],[43,-12],[36,-12],[28,-15],[20,-18],[13,-20]]},
 
   {f:'w',cA:T.HOT,cB:T.W1,n:25,s:.0012,pts:[[10,-62],[8,-57],[5,-50]]},
@@ -248,10 +261,10 @@ const CURRENTS=[
 
   // ── GIRO ATLÁNTICO SUR ─────────────────────────────────────────
   {f:'w',nm:'C. Ecuatorial Sur Atlántico',sv:16,tr:'20–24 °C',
-   cA:T.W1,cB:T.W1,n:45,s:.0012,pts:[[-3,5],[-3,-12],[-4,-25],[-5,-35]]},
+   cA:T.W1,cB:T.W1,n:45,s:.0012,pts:[[-3,5],[-3,-12],[-4,-25],[-5,-38]]},
 
   {f:'w',nm:'C. de Brasil',sv:20,tr:'16–28 °C',
-   cA:T.HOT,cB:T.W3,n:50,s:.0015,pts:[[-5,-35],[-12,-36],[-20,-38],[-28,-45],[-35,-52],[-38,-52]]},
+   cA:T.HOT,cB:T.W3,n:50,s:.0015,pts:[[-5,-38],[-12,-36],[-20,-38],[-28,-45],[-35,-52],[-38,-52]]},
 
   {f:'c',nm:'C. de Malvinas / Falkland',sv:40,tr:'0–6 °C',
    cA:T.C3,cB:T.C1,n:50,s:.0014,pts:[[-56,-60],[-50,-61],[-44,-57],[-40,-54],[-38,-52]]},
@@ -259,7 +272,7 @@ const CURRENTS=[
   {f:'c',nm:'C. del Atlántico Sur',sv:25,tr:'6–12 °C',
    cA:T.M1,cB:T.C1,n:70,s:.0013,pts:[[-38,-52],[-39,-42],[-40,-30],[-40,-18],[-39,-6],[-38,6],[-38,18]]},
 
-  {f:'c',nm:'C. de Benguela',sv:15,tr:'3–9 °C',
+  {f:'c',nm:'C. de Benguela',sv:15,tr:'3–9 °C',proceso:'afloramiento',
    cA:T.C2,cB:T.M2,n:45,s:.0013,pts:[[-38,18],[-30,14],[-22,12],[-14,10],[-6,9],[-3,5]]},
 
   // ── GIRO ÍNDICO ────────────────────────────────────────────────
@@ -269,7 +282,7 @@ const CURRENTS=[
   {f:'w',nm:'C. de Mozambique',sv:20,tr:'20–24 °C',
    cA:T.W1,cB:T.W2,n:38,s:.0012,pts:[[-11,44],[-17,42],[-22,39],[-26,37],[-28,35]]},
 
-  {f:'w',nm:'C. de las Agujas (Agulhas)',sv:70,tr:'9–20 °C',
+  {f:'w',nm:'C. de las Agujas (Agulhas)',sv:70,tr:'9–20 °C',proceso:'convergencia',
    cA:T.W2,cB:T.M1,n:45,s:.0015,pts:[[-28,35],[-30,33],[-33,29],[-35,25],[-37,22],[-40,21]]},
 
   {f:'c',cA:T.M1,cB:T.C4,n:30,s:.001,pts:[[-40,21],[-50,24],[-57,28]]},
@@ -280,7 +293,7 @@ const CURRENTS=[
   {f:'w',nm:'C. Ecuatorial Norte Índico',sv:20,tr:'20–24 °C',
    cA:T.W1,cB:T.W1,n:40,s:.0011,pts:[[10,85],[5,82],[6,75],[6,65],[6,57],[8,48]]},
 
-  {f:'w',nm:'C. de Somalia',sv:30,tr:'20–28 °C',
+  {f:'w',nm:'C. de Somalia',sv:30,tr:'20–28 °C',proceso:'afloramiento',
    cA:T.W1,cB:T.W1,n:35,s:.0012,pts:[[8,48],[4,46],[1,44],[-3,43],[-7,44],[-11,44]]},
 
   // ── CIRCUMPOLAR ────────────────────────────────────────────────
@@ -292,12 +305,14 @@ const CURRENTS=[
 // ─ CONSTRUIR LÍNEAS Y PARTÍCULAS ─────────────────────────────
 const animCurrents=[];
 const curObjects=[];
+const pickPoints=[];
 const R=1.027;
 
 function buildCurrent(cur){
   const {pts,cA,cB,n=50,s=.0015,closed=false,f}=cur;
   const vecs=pts.map(([la,lo])=>ll(la,lo,R));
   const curve=new THREE.CatmullRomCurve3(vecs,closed,'catmullrom',.5);
+  pickPoints.push(curve.getPoints(80));
 
   const NL=200,lineP=new Float32Array((NL+1)*3),lineC=new Float32Array((NL+1)*3);
   const ptsCurve=curve.getPoints(NL);
@@ -367,6 +382,51 @@ function buildPanel(mode){
 btnAll.addEventListener('click',()=>setFilter('all'));
 btnWarm.addEventListener('click',()=>setFilter('w'));
 btnCold.addEventListener('click',()=>setFilter('c'));
+
+// ─ TOOLTIP AL HACER CLIC EN CORRIENTE ───────────────────────
+const curTooltip=document.getElementById('cur-tooltip');
+const PROCESO={
+  afloramiento:{lbl:'⬆ AFLORAMIENTO',desc:'Agua fría y rica en nutrientes asciende desde las profundidades a la superficie, impulsada por el viento.',cls:'af'},
+  hundimiento:  {lbl:'⬇ HUNDIMIENTO', desc:'Agua densa, fría o salina se hunde hacia las profundidades, impulsando la circulación termohalina global.',cls:'hu'},
+  convergencia: {lbl:'↕ CONVERGENCIA',desc:'Masas de agua de distinta temperatura y densidad se encuentran, generando mezcla intensa y gran productividad biológica.',cls:'cv'},
+};
+function showCurrentTip(idx,x,y){
+  const cur=CURRENTS[idx];
+  if(!cur.nm){hideTip();return;}
+  const p=cur.proceso?PROCESO[cur.proceso]:null;
+  let h=`<div class="ctt-name">${cur.nm}</div>`;
+  h+=`<div class="ctt-badge ${cur.f}">${cur.f==='w'?'Cálida':'Fría'}</div>`;
+  if(cur.tr)h+=`<div class="ctt-row"><span class="ctt-key">Temperatura</span><span class="ctt-val">${cur.tr}</span></div>`;
+  if(cur.sv)h+=`<div class="ctt-row"><span class="ctt-key">Transporte</span><span class="ctt-val">${cur.sv} Sv</span></div>`;
+  if(p)h+=`<div class="ctt-proc ${p.cls}"><strong>${p.lbl}</strong><br>${p.desc}</div>`;
+  curTooltip.innerHTML=h;
+  curTooltip.style.display='block';
+  const tw=curTooltip.offsetWidth,th=curTooltip.offsetHeight;
+  let tx=x+18,ty=y-Math.round(th/2);
+  if(tx+tw>innerWidth-10)tx=x-tw-18;
+  if(ty<10)ty=10;
+  if(ty+th>innerHeight-10)ty=innerHeight-th-10;
+  curTooltip.style.left=tx+'px';curTooltip.style.top=ty+'px';
+}
+function hideTip(){curTooltip.style.display='none';}
+
+const _ray=new THREE.Raycaster();
+const _mv=new THREE.Vector2();
+renderer.domElement.addEventListener('click',e=>{
+  _mv.x=(e.clientX/innerWidth)*2-1;
+  _mv.y=-(e.clientY/innerHeight)*2+1;
+  _ray.setFromCamera(_mv,camera);
+  const hits=_ray.intersectObject(earthMesh);
+  if(!hits.length){hideTip();return;}
+  const hl=earthMesh.worldToLocal(hits[0].point.clone());
+  let md=Infinity,ci=-1;
+  pickPoints.forEach((pts,i)=>{
+    if(!curObjects[i].lineObj.visible||!CURRENTS[i].nm)return;
+    for(const pt of pts){const d=hl.distanceTo(pt);if(d<md){md=d;ci=i;}}
+  });
+  if(md>0.13||ci<0){hideTip();return;}
+  showCurrentTip(ci,e.clientX,e.clientY);
+});
 
 // ─ ANIMACIÓN ────────────────────────────────────────────────
 const speedSlider=document.getElementById('speedSlider');
