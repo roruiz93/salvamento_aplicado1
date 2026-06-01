@@ -46,18 +46,32 @@
     .cp-bf{height:4px;border-radius:3px;}
     .cp-tr{color:rgba(180,200,230,.45);font-size:.54rem;letter-spacing:.5px;margin-left:14px;margin-bottom:2px;}
     .cp-foot{color:rgba(180,200,230,.38);font-size:.53rem;letter-spacing:.5px;text-align:center;margin-top:12px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08);line-height:1.5;}
-    #cur-tooltip{position:absolute;z-index:20;background:rgba(0,0,0,.93);border:1px solid rgba(255,255,255,.22);border-radius:12px;padding:14px 16px;pointer-events:none;display:none;max-width:242px;}
-    .ctt-name{color:#fff;font-size:.72rem;letter-spacing:1px;font-weight:600;margin-bottom:6px;line-height:1.4;}
-    .ctt-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.54rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
-    .ctt-badge.w{background:rgba(255,140,30,.25);color:#ffb870;border:1px solid rgba(255,140,30,.4);}
-    .ctt-badge.c{background:rgba(30,120,255,.2);color:#88ccff;border:1px solid rgba(30,120,255,.4);}
-    .ctt-row{display:flex;justify-content:space-between;gap:12px;margin-top:5px;}
-    .ctt-key{color:rgba(180,200,230,.5);font-size:.56rem;letter-spacing:1px;text-transform:uppercase;}
-    .ctt-val{color:rgba(220,235,255,.9);font-size:.6rem;font-weight:600;}
-    .ctt-proc{margin-top:9px;padding-top:8px;border-top:1px solid rgba(255,255,255,.1);font-size:.58rem;letter-spacing:.5px;line-height:1.55;}
-    .ctt-proc.af{color:#7fffd4;}
-    .ctt-proc.hu{color:#89b4fa;}
-    .ctt-proc.cv{color:#f9e2af;}
+    #cur-card{position:absolute;bottom:80px;left:50%;transform:translateX(-50%) translateY(22px);width:282px;z-index:20;display:none;opacity:0;transition:opacity .26s ease,transform .26s ease;pointer-events:all;border-radius:14px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.1);}
+    #cur-card.show{opacity:1;transform:translateX(-50%) translateY(0);}
+    .crd-head{padding:14px 14px 11px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+    .crd-head.w{background:linear-gradient(135deg,rgba(255,100,20,.55),rgba(160,30,0,.35));border-bottom:1px solid rgba(255,140,50,.22);}
+    .crd-head.c{background:linear-gradient(135deg,rgba(20,80,210,.55),rgba(0,20,110,.35));border-bottom:1px solid rgba(80,160,255,.22);}
+    .crd-title{flex:1;min-width:0;}
+    .crd-name{color:#fff;font-size:.78rem;font-weight:700;letter-spacing:.7px;line-height:1.35;}
+    .crd-badge{display:inline-block;margin-top:5px;padding:2px 9px;border-radius:8px;font-size:.52rem;letter-spacing:2px;text-transform:uppercase;}
+    .crd-badge.w{background:rgba(255,140,30,.35);color:#ffcc88;}
+    .crd-badge.c{background:rgba(30,120,255,.35);color:#aad4ff;}
+    .crd-close{width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:rgba(255,255,255,.55);font-size:.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,color .15s;line-height:1;font-family:inherit;}
+    .crd-close:hover{background:rgba(255,255,255,.2);color:#fff;}
+    .crd-body{background:rgba(0,0,0,.9);padding:13px 15px 15px;}
+    .crd-stat{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.07);}
+    .crd-stat:last-of-type{border-bottom:none;}
+    .crd-slabel{color:rgba(180,200,230,.5);font-size:.56rem;letter-spacing:1.2px;text-transform:uppercase;}
+    .crd-sval{color:rgba(220,235,255,.92);font-size:.67rem;font-weight:700;}
+    .crd-proc{margin-top:12px;padding:10px 12px;border-radius:9px;}
+    .crd-proc.af{background:rgba(0,200,160,.11);border:1px solid rgba(0,200,160,.28);}
+    .crd-proc.hu{background:rgba(80,120,255,.11);border:1px solid rgba(80,120,255,.28);}
+    .crd-proc.cv{background:rgba(220,190,80,.09);border:1px solid rgba(220,190,80,.25);}
+    .crd-plbl{font-size:.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+    .crd-proc.af .crd-plbl{color:#5ff5c8;}
+    .crd-proc.hu .crd-plbl{color:#89b4fa;}
+    .crd-proc.cv .crd-plbl{color:#f9e2af;}
+    .crd-pdesc{font-size:.57rem;letter-spacing:.3px;line-height:1.65;margin-top:5px;color:rgba(210,225,250,.6);}
   </style>
 </head>
 <body>
@@ -79,7 +93,7 @@
   <button class="fbtn" id="btn-cold">FRÍAS</button>
 </div>
 <div id="cur-panel"></div>
-<div id="cur-tooltip"></div>
+<div id="cur-card"></div>
 <script type="importmap">
 {"imports":{"three":"https://unpkg.com/three@0.158.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.158.0/examples/jsm/"}}
 </script>
@@ -384,31 +398,38 @@ btnWarm.addEventListener('click',()=>setFilter('w'));
 btnCold.addEventListener('click',()=>setFilter('c'));
 
 // ─ TOOLTIP AL HACER CLIC EN CORRIENTE ───────────────────────
-const curTooltip=document.getElementById('cur-tooltip');
+const curCard=document.getElementById('cur-card');
 const PROCESO={
-  afloramiento:{lbl:'⬆ AFLORAMIENTO',desc:'Agua fría y rica en nutrientes asciende desde las profundidades a la superficie, impulsada por el viento.',cls:'af'},
+  afloramiento:{lbl:'⬆ AFLORAMIENTO',desc:'Agua fría y rica en nutrientes asciende desde las profundidades a la superficie, impulsada por los vientos costeros.',cls:'af'},
   hundimiento:  {lbl:'⬇ HUNDIMIENTO', desc:'Agua densa, fría o salina se hunde hacia las profundidades, impulsando la circulación termohalina global.',cls:'hu'},
   convergencia: {lbl:'↕ CONVERGENCIA',desc:'Masas de agua de distinta temperatura y densidad se encuentran, generando mezcla intensa y gran productividad biológica.',cls:'cv'},
 };
-function showCurrentTip(idx,x,y){
+function showCurrentTip(idx){
   const cur=CURRENTS[idx];
   if(!cur.nm){hideTip();return;}
   const p=cur.proceso?PROCESO[cur.proceso]:null;
-  let h=`<div class="ctt-name">${cur.nm}</div>`;
-  h+=`<div class="ctt-badge ${cur.f}">${cur.f==='w'?'Cálida':'Fría'}</div>`;
-  if(cur.tr)h+=`<div class="ctt-row"><span class="ctt-key">Temperatura</span><span class="ctt-val">${cur.tr}</span></div>`;
-  if(cur.sv)h+=`<div class="ctt-row"><span class="ctt-key">Transporte</span><span class="ctt-val">${cur.sv} Sv</span></div>`;
-  if(p)h+=`<div class="ctt-proc ${p.cls}"><strong>${p.lbl}</strong><br>${p.desc}</div>`;
-  curTooltip.innerHTML=h;
-  curTooltip.style.display='block';
-  const tw=curTooltip.offsetWidth,th=curTooltip.offsetHeight;
-  let tx=x+18,ty=y-Math.round(th/2);
-  if(tx+tw>innerWidth-10)tx=x-tw-18;
-  if(ty<10)ty=10;
-  if(ty+th>innerHeight-10)ty=innerHeight-th-10;
-  curTooltip.style.left=tx+'px';curTooltip.style.top=ty+'px';
+  let h=`<div class="crd-head ${cur.f}">
+    <div class="crd-title">
+      <div class="crd-name">${cur.nm}</div>
+      <div class="crd-badge ${cur.f}">${cur.f==='w'?'Cálida':'Fría'}</div>
+    </div>
+    <button class="crd-close">×</button>
+  </div>
+  <div class="crd-body">`;
+  if(cur.tr)h+=`<div class="crd-stat"><span class="crd-slabel">Temperatura</span><span class="crd-sval">${cur.tr}</span></div>`;
+  if(cur.sv)h+=`<div class="crd-stat"><span class="crd-slabel">Transporte</span><span class="crd-sval">${cur.sv} Sv</span></div>`;
+  h+=`<div class="crd-stat"><span class="crd-slabel">1 Sv equivale a</span><span class="crd-sval">1 000 000 m³/s</span></div>`;
+  if(p)h+=`<div class="crd-proc ${p.cls}"><div class="crd-plbl">${p.lbl}</div><div class="crd-pdesc">${p.desc}</div></div>`;
+  h+=`</div>`;
+  curCard.innerHTML=h;
+  curCard.style.display='block';
+  requestAnimationFrame(()=>curCard.classList.add('show'));
+  curCard.querySelector('.crd-close').addEventListener('click',hideTip,{once:true});
 }
-function hideTip(){curTooltip.style.display='none';}
+function hideTip(){
+  curCard.classList.remove('show');
+  setTimeout(()=>{if(!curCard.classList.contains('show'))curCard.style.display='none';},270);
+}
 
 const _ray=new THREE.Raycaster();
 const _mv=new THREE.Vector2();
@@ -425,7 +446,7 @@ renderer.domElement.addEventListener('click',e=>{
     for(const pt of pts){const d=hl.distanceTo(pt);if(d<md){md=d;ci=i;}}
   });
   if(md>0.13||ci<0){hideTip();return;}
-  showCurrentTip(ci,e.clientX,e.clientY);
+  showCurrentTip(ci);
 });
 
 // ─ ANIMACIÓN ────────────────────────────────────────────────
