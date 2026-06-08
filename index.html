@@ -46,20 +46,28 @@
     .cp-bf{height:4px;border-radius:3px;}
     .cp-tr{color:rgba(180,200,230,.45);font-size:.54rem;letter-spacing:.5px;margin-left:14px;margin-bottom:2px;}
     .cp-foot{color:rgba(180,200,230,.38);font-size:.53rem;letter-spacing:.5px;text-align:center;margin-top:12px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08);line-height:1.5;}
+    #lang-toggle{position:absolute;top:20px;left:20px;display:flex;background:rgba(0,0,0,.68);border:1px solid rgba(255,255,255,.22);border-radius:14px;overflow:hidden;z-index:10;}
+    .lbtn{padding:5px 11px;color:rgba(200,220,255,.5);font-size:.6rem;letter-spacing:2px;cursor:pointer;transition:all .2s;font-family:inherit;background:none;border:none;}
+    .lbtn.act{color:#fff;background:rgba(255,255,255,.12);}
+    .lbtn:hover:not(.act){background:rgba(255,255,255,.06);}
   </style>
 </head>
 <body>
-<div id="info"><h1>El Mundo</h1><p>Corrientes marinas · inclinación axial real 23.5°</p></div>
+<div id="info"><h1 id="txt-title">El Mundo</h1><p id="txt-subtitle">Corrientes marinas · inclinación axial real 23.5°</p></div>
 <div id="controls-hint">ARRASTRAR · RUEDA = ZOOM · DOBLE CLIC = RESET</div>
-<div id="speed-control"><label>VELOCIDAD</label><input type="range" id="speedSlider" min="0" max="10" value="2" step="0.1"/></div>
+<div id="speed-control"><label id="txt-speed">VELOCIDAD</label><input type="range" id="speedSlider" min="0" max="10" value="2" step="0.1"/></div>
 <div id="legend">
-  <div class="leg-title">Temperatura superficial</div>
+  <div class="leg-title" id="txt-leg-title">Temperatura superficial</div>
   <div class="leg-bar"></div>
-  <div class="leg-labels"><span>← Fría (0°C)</span><span>Cálida (30°C) →</span></div>
+  <div class="leg-labels"><span id="txt-leg-cold">← Fría (0°C)</span><span id="txt-leg-hot">Cálida (30°C) →</span></div>
   <hr class="leg-sep">
-  <div class="leg-row"><div class="leg-line" style="background:linear-gradient(to right,#ff1100,#ffaa00)"></div><span class="leg-txt">Corriente cálida</span></div>
-  <div class="leg-row"><div class="leg-line" style="background:linear-gradient(to right,#0008aa,#00ccff)"></div><span class="leg-txt">Corriente fría</span></div>
-  <div class="leg-row"><div class="leg-line" style="background:linear-gradient(to right,#ff4400,#00ddff,#ff4400)"></div><span class="leg-txt">Giro oceánico (circuito)</span></div>
+  <div class="leg-row"><div class="leg-line" style="background:linear-gradient(to right,#ff1100,#ffaa00)"></div><span class="leg-txt" id="txt-leg-warm">Corriente cálida</span></div>
+  <div class="leg-row"><div class="leg-line" style="background:linear-gradient(to right,#0008aa,#00ccff)"></div><span class="leg-txt" id="txt-leg-cold2">Corriente fría</span></div>
+  <div class="leg-row"><div class="leg-line" style="background:linear-gradient(to right,#ff4400,#00ddff,#ff4400)"></div><span class="leg-txt" id="txt-leg-gyre">Giro oceánico (circuito)</span></div>
+</div>
+<div id="lang-toggle">
+  <button class="lbtn act" id="btn-es">ES</button>
+  <button class="lbtn" id="btn-en">EN</button>
 </div>
 <div id="filter-controls">
   <button class="fbtn act" id="btn-all">TODAS</button>
@@ -76,6 +84,51 @@ import { OrbitControls }             from 'three/addons/controls/OrbitControls.j
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 const BASE='https://cdn.jsdelivr.net/gh/mrdoob/three.js@r158/examples/textures/planets/';
+
+// ─ IDIOMA ───────────────────────────────────────────────────
+let currentLang='es';
+const TR={
+  es:{
+    title:'Tierra 3D – Corrientes Marinas',
+    h1:'El Mundo',
+    subtitle:'Corrientes marinas · inclinación axial real 23.5°',
+    hint:'ARRASTRAR · RUEDA = ZOOM · DOBLE CLIC = RESET',
+    speed:'VELOCIDAD',
+    legTitle:'Temperatura superficial',
+    legCold:'← Fría (0°C)',
+    legHot:'Cálida (30°C) →',
+    legWarm:'Corriente cálida',
+    legCold2:'Corriente fría',
+    legGyre:'Giro oceánico (circuito)',
+    btnAll:'TODAS',
+    btnWarm:'CÁLIDAS',
+    btnCold:'FRÍAS',
+    panelWarm:'CORRIENTES CÁLIDAS',
+    panelCold:'CORRIENTES FRÍAS',
+    currents:'corrientes',
+    approx:'aprox.',
+  },
+  en:{
+    title:'3D Earth – Ocean Currents',
+    h1:'The World',
+    subtitle:'Ocean currents · real axial tilt 23.5°',
+    hint:'DRAG · WHEEL = ZOOM · DOUBLE CLICK = RESET',
+    speed:'SPEED',
+    legTitle:'Surface temperature',
+    legCold:'← Cold (0°C)',
+    legHot:'Warm (30°C) →',
+    legWarm:'Warm current',
+    legCold2:'Cold current',
+    legGyre:'Oceanic gyre (circuit)',
+    btnAll:'ALL',
+    btnWarm:'WARM',
+    btnCold:'COLD',
+    panelWarm:'WARM CURRENTS',
+    panelCold:'COLD CURRENTS',
+    currents:'currents',
+    approx:'approx.',
+  },
+};
 
 // ─ RENDERERS ────────────────────────────────────────────────
 const renderer=new THREE.WebGLRenderer({antialias:true});
@@ -127,15 +180,26 @@ function ll(lat,lon,r=1.08){const phi=(90-lat)*Math.PI/180,theta=(lon+180)*Math.
 
 // ─ ETIQUETAS ────────────────────────────────────────────────
 const labelObjects=[];
-function addLabel(text,lat,lon,cls){const d=document.createElement('div');d.className=cls;d.textContent=text;const o=new CSS2DObject(d);o.position.copy(ll(lat,lon));earthMesh.add(o);labelObjects.push(o);}
-addLabel('NORTE AMÉRICA',48,-100,'continent-label');addLabel('SUR AMÉRICA',-14,-56,'continent-label');
-addLabel('EUROPA',52,18,'continent-label');addLabel('ÁFRICA',5,22,'continent-label');
-addLabel('ASIA',47,95,'continent-label');addLabel('OCEANÍA',-27,134,'continent-label');
-addLabel('ANTÁRTIDA',-80,0,'continent-label');
-addLabel('OCÉANO PACÍFICO NORTE',28,-155,'ocean-label');addLabel('OCÉANO PACÍFICO SUR',-32,-138,'ocean-label');
-addLabel('OCÉANO ATLÁNTICO NORTE',40,-35,'ocean-label');addLabel('OCÉANO ATLÁNTICO SUR',-28,-16,'ocean-label');
-addLabel('OCÉANO ÍNDICO',-20,78,'ocean-label');addLabel('OCÉANO ÁRTICO',85,0,'ocean-label');
-addLabel('OCÉANO AUSTRAL',-62,50,'ocean-label');
+const geoLabels=[];
+function addLabel(es,en,lat,lon,cls){
+  const d=document.createElement('div');d.className=cls;d.textContent=es;
+  const o=new CSS2DObject(d);o.position.copy(ll(lat,lon));earthMesh.add(o);
+  labelObjects.push(o);geoLabels.push({el:d,es,en});
+}
+addLabel('NORTE AMÉRICA','NORTH AMERICA',48,-100,'continent-label');
+addLabel('SUR AMÉRICA','SOUTH AMERICA',-14,-56,'continent-label');
+addLabel('EUROPA','EUROPE',52,18,'continent-label');
+addLabel('ÁFRICA','AFRICA',5,22,'continent-label');
+addLabel('ASIA','ASIA',47,95,'continent-label');
+addLabel('OCEANÍA','OCEANIA',-27,134,'continent-label');
+addLabel('ANTÁRTIDA','ANTARCTICA',-80,0,'continent-label');
+addLabel('OCÉANO PACÍFICO NORTE','NORTH PACIFIC OCEAN',28,-155,'ocean-label');
+addLabel('OCÉANO PACÍFICO SUR','SOUTH PACIFIC OCEAN',-32,-138,'ocean-label');
+addLabel('OCÉANO ATLÁNTICO NORTE','NORTH ATLANTIC OCEAN',40,-35,'ocean-label');
+addLabel('OCÉANO ATLÁNTICO SUR','SOUTH ATLANTIC OCEAN',-28,-16,'ocean-label');
+addLabel('OCÉANO ÍNDICO','INDIAN OCEAN',-20,78,'ocean-label');
+addLabel('OCÉANO ÁRTICO','ARCTIC OCEAN',85,0,'ocean-label');
+addLabel('OCÉANO AUSTRAL','SOUTHERN OCEAN',-62,50,'ocean-label');
 
 // ─ PALETA DE TEMPERATURA ────────────────────────────────────
 const T={
@@ -153,138 +217,138 @@ const T={
 function lerpRGB(a,b,t){return[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t];}
 
 // ─ CORRIENTES MARINAS ──────────────────────────────────────────
-// f:'w'=cálida  f:'c'=fría   nm=nombre display   sv=transporte Sverdrups   tr=rango temp
+// f:'w'=cálida  f:'c'=fría   nm=nombre es   nm_en=nombre en   sv=Sverdrups   tr=rango temp
 const CURRENTS=[
 
   // ── GIRO PACÍFICO NORTE ──────────────────────────────────────
-  {f:'w',nm:'C. Ecuatorial Norte Pacífico',sv:45,tr:'20–28 °C',
+  {f:'w',nm:'C. Ecuatorial Norte Pacífico',nm_en:'North Pacific Equatorial Current',sv:45,tr:'20–28 °C',
    cA:T.W1,cB:T.HOT,n:55,s:.0013,pts:[[14,-106],[14,-128],[14,-152],[14,-175],[14,170],[14,152],[14,137],[14,127]]},
 
-  {f:'w',nm:'Kuroshio',sv:42,tr:'18–28 °C',
+  {f:'w',nm:'Kuroshio',nm_en:'Kuroshio',sv:42,tr:'18–28 °C',
    cA:T.HOT,cB:T.W2,n:50,s:.0018,pts:[[14,127],[23,129],[28,133],[34,138],[37,141],[40,148],[43,154],[45,158]]},
 
-  {f:'w',nm:'C. del Pacífico Norte',sv:15,tr:'9–20 °C',
+  {f:'w',nm:'C. del Pacífico Norte',nm_en:'North Pacific Current',sv:15,tr:'9–20 °C',
    cA:T.W2,cB:T.M1,n:50,s:.0013,pts:[[44,158],[44,170],[44,-175],[44,-162],[44,-150],[44,-137]]},
 
-  {f:'c',nm:'C. de Alaska',sv:5,tr:'4–12 °C',
+  {f:'c',nm:'C. de Alaska',nm_en:'Alaska Current',sv:5,tr:'4–12 °C',
    cA:T.M1,cB:T.M2,n:45,s:.0012,pts:[[43,-137],[47,-135],[51,-141],[55,-150],[56,-158],[54,-165],[52,-173]]},
 
   {f:'c',cA:T.M2,cB:T.C2,n:25,s:.001,pts:[[52,-173],[55,177],[57,165]]},
 
-  {f:'c',nm:'C. de Kamchatka / Oyashio',sv:10,tr:'3–9 °C',
+  {f:'c',nm:'C. de Kamchatka / Oyashio',nm_en:'Kamchatka / Oyashio Current',sv:10,tr:'3–9 °C',
    cA:T.C2,cB:T.M2,n:45,s:.0015,pts:[[57,165],[52,160],[47,152],[42,147],[37,143],[34,141]]},
 
-  {f:'c',nm:'C. Subártica N. Pacífico',sv:12,tr:'3–9 °C',
+  {f:'c',nm:'C. Subártica N. Pacífico',nm_en:'North Pacific Subarctic Current',sv:12,tr:'3–9 °C',
    cA:T.C1,cB:T.C1,n:45,s:.001,pts:[[34,141],[38,155],[40,175],[40,-170],[40,-150],[44,-137]]},
 
-  {f:'c',nm:'C. de California',sv:10,tr:'9–14 °C',
+  {f:'c',nm:'C. de California',nm_en:'California Current',sv:10,tr:'9–14 °C',
    cA:T.C1,cB:T.M2,n:50,s:.0015,pts:[[44,-137],[44,-128],[38,-124],[30,-120],[23,-114],[17,-107],[14,-106]]},
 
   // ── GIRO PACÍFICO SUR ─────────────────────────────────────────
-  {f:'w',nm:'C. Ecuatorial Sur Pacífico',sv:35,tr:'12–24 °C',
+  {f:'w',nm:'C. Ecuatorial Sur Pacífico',nm_en:'South Pacific Equatorial Current',sv:35,tr:'12–24 °C',
    cA:T.M1,cB:T.W1,n:55,s:.0013,pts:[[-5,-82],[-5,-105],[-5,-130],[-5,-155],[-5,-175],[-5,172],[-5,155],[-12,148]]},
 
   {f:'w',cA:T.HOT,cB:T.W1,n:28,s:.0012,pts:[[14,127],[11,130],[8,132]]},
 
-  {f:'w',nm:'Contracorriente Ecuatorial Pacífico',sv:25,tr:'20–24 °C',
+  {f:'w',nm:'Contracorriente Ecuatorial Pacífico',nm_en:'Pacific Equatorial Countercurrent',sv:25,tr:'20–24 °C',
    cA:T.W1,cB:T.W1,n:55,s:.0011,pts:[[8,132],[8,150],[8,167],[8,-175],[8,-155],[8,-132],[8,-110],[8,-95]]},
 
   {f:'w',cA:T.W1,cB:T.W1,n:20,s:.0012,pts:[[8,-95],[11,-98],[14,-106]]},
 
   {f:'w',cA:T.W1,cB:T.M1,n:28,s:.0013,pts:[[8,-95],[4,-92],[0,-88],[-3,-85],[-5,-82]]},
 
-  {f:'w',nm:'C. de Australia Oriental',sv:30,tr:'16–24 °C',
+  {f:'w',nm:'C. de Australia Oriental',nm_en:'East Australian Current',sv:30,tr:'16–24 °C',
    cA:T.W1,cB:T.W3,n:45,s:.0015,pts:[[-12,148],[-16,157],[-22,156],[-28,155],[-34,152],[-40,151],[-43,149]]},
 
   {f:'w',cA:T.W1,cB:T.W1,n:30,s:.0012,pts:[[-12,148],[-5,147],[0,147],[4,143],[8,132]]},
 
-  {f:'c',nm:'C. Subantártica Pacífico Sur',sv:8,tr:'0–9 °C',
+  {f:'c',nm:'C. Subantártica Pacífico Sur',nm_en:'South Pacific Subantarctic Current',sv:8,tr:'0–9 °C',
    cA:T.M2,cB:T.C4,n:30,s:.001,pts:[[-43,149],[-52,148],[-57,148]]},
 
-  {f:'c',nm:'C. de Australia Occidental',sv:5,tr:'15–20 °C',
+  {f:'c',nm:'C. de Australia Occidental',nm_en:'West Australian Current',sv:5,tr:'15–20 °C',
    cA:T.C1,cB:T.M2,n:40,s:.0012,pts:[[-35,115],[-27,113],[-20,113],[-13,116],[-8,118]]},
 
-  {f:'c',nm:'C. de Humboldt / Perú',sv:20,tr:'0–12 °C',
+  {f:'c',nm:'C. de Humboldt / Perú',nm_en:'Humboldt / Peru Current',sv:20,tr:'0–12 °C',
    cA:T.C3,cB:T.M1,n:55,s:.0015,pts:[[-58,-90],[-52,-80],[-45,-75],[-37,-73],[-28,-72],[-20,-72],[-12,-78],[-4,-81],[-5,-82]]},
 
   // ── GIRO ATLÁNTICO NORTE ──────────────────────────────────────
-  {f:'w',nm:'C. Ecuatorial Norte Atlántico',sv:20,tr:'20–28 °C',
+  {f:'w',nm:'C. Ecuatorial Norte Atlántico',nm_en:'North Atlantic Equatorial Current',sv:20,tr:'20–28 °C',
    cA:T.W1,cB:T.HOT,n:50,s:.0013,pts:[[13,-20],[13,-38],[13,-56],[10,-62]]},
 
-  {f:'w',nm:'C. de las Guayanas',sv:30,tr:'20–28 °C',
+  {f:'w',nm:'C. de las Guayanas',nm_en:'Guiana Current',sv:30,tr:'20–28 °C',
    cA:T.W1,cB:T.HOT,n:60,s:.0015,pts:[[-5,-35],[0,-45],[2,-50],[4,-55],[7,-57],[10,-62],[11,-65],[12,-72],[13,-77],[15,-82],[18,-87],[21,-86]]},
 
-  {f:'w',nm:'Gulf Stream',sv:100,tr:'16–28 °C',
+  {f:'w',nm:'Gulf Stream',nm_en:'Gulf Stream',sv:100,tr:'16–28 °C',
    cA:T.HOT,cB:T.W3,n:65,s:.0018,pts:[[21,-86],[24,-82],[25,-79],[28,-79],[32,-78],[36,-74],[40,-68],[44,-58],[48,-44],[51,-32],[55,-20],[58,-8],[61,2],[63,5]]},
 
-  {f:'w',nm:'C. de Noruega',sv:8,tr:'9–16 °C',
+  {f:'w',nm:'C. de Noruega',nm_en:'Norwegian Current',sv:8,tr:'9–16 °C',
    cA:T.W3,cB:T.M2,n:35,s:.0015,pts:[[62,5],[65,8],[68,12],[70,15]]},
 
-  {f:'c',nm:'C. del Labrador',sv:40,tr:'0–6 °C',
+  {f:'c',nm:'C. del Labrador',nm_en:'Labrador Current',sv:40,tr:'0–6 °C',
    cA:T.C3,cB:T.C1,n:45,s:.0015,pts:[[72,-56],[68,-60],[60,-54],[53,-53],[47,-52],[42,-50]]},
 
   {f:'c',cA:T.M2,cB:T.C3,n:35,s:.0012,pts:[[70,15],[73,20],[77,0],[80,-5],[80,-12]]},
 
-  {f:'c',nm:'C. de Groenlandia Oriental',sv:15,tr:'-1–0 °C',
+  {f:'c',nm:'C. de Groenlandia Oriental',nm_en:'East Greenland Current',sv:15,tr:'-1–0 °C',
    cA:T.C4,cB:T.C3,n:40,s:.0014,pts:[[80,-12],[73,-20],[67,-23],[61,-28],[56,-36]]},
 
-  {f:'c',nm:'C. de Groenlandia Occidental',sv:12,tr:'0–3 °C',
+  {f:'c',nm:'C. de Groenlandia Occidental',nm_en:'West Greenland Current',sv:12,tr:'0–3 °C',
    cA:T.C3,cB:T.C2,n:35,s:.0013,pts:[[56,-36],[59,-46],[62,-52],[64,-52],[66,-53],[69,-54],[72,-56]]},
 
-  {f:'c',nm:'C. de Canarias',sv:10,tr:'6–12 °C',
+  {f:'c',nm:'C. de Canarias',nm_en:'Canary Current',sv:10,tr:'6–12 °C',
    cA:T.C1,cB:T.M2,n:50,s:.0014,pts:[[55,-20],[50,-14],[43,-12],[36,-12],[28,-15],[20,-18],[13,-20]]},
 
   {f:'w',cA:T.HOT,cB:T.W1,n:25,s:.0012,pts:[[10,-62],[8,-57],[5,-50]]},
 
   {f:'w',cA:T.HOT,cB:T.W1,n:22,s:.0012,pts:[[5,-55],[5,-52],[5,-50]]},
 
-  {f:'w',nm:'Contracorriente Ecuatorial Atlántico',sv:10,tr:'20–24 °C',
+  {f:'w',nm:'Contracorriente Ecuatorial Atlántico',nm_en:'Atlantic Equatorial Countercurrent',sv:10,tr:'20–24 °C',
    cA:T.W1,cB:T.W1,n:45,s:.0011,pts:[[5,-50],[5,-38],[5,-24],[4,-15]]},
 
-  {f:'w',nm:'C. de Guinea',sv:4,tr:'22–28 °C',
+  {f:'w',nm:'C. de Guinea',nm_en:'Guinea Current',sv:4,tr:'22–28 °C',
    cA:T.W1,cB:T.W1,n:35,s:.001,pts:[[4,-15],[3,-8],[2,-2],[1,3],[0,5],[-3,5]]},
 
   {f:'w',cA:T.W1,cB:T.M2,n:22,s:.0011,pts:[[0,5],[-4,8],[-8,10],[-12,10],[-14,10]]},
 
   // ── GIRO ATLÁNTICO SUR ─────────────────────────────────────────
-  {f:'w',nm:'C. Ecuatorial Sur Atlántico',sv:16,tr:'20–24 °C',
+  {f:'w',nm:'C. Ecuatorial Sur Atlántico',nm_en:'South Atlantic Equatorial Current',sv:16,tr:'20–24 °C',
    cA:T.W1,cB:T.W1,n:45,s:.0012,pts:[[-3,5],[-3,-12],[-4,-25],[-5,-35]]},
 
-  {f:'w',nm:'C. de Brasil',sv:20,tr:'16–28 °C',
+  {f:'w',nm:'C. de Brasil',nm_en:'Brazil Current',sv:20,tr:'16–28 °C',
    cA:T.HOT,cB:T.W3,n:50,s:.0015,pts:[[-5,-35],[-12,-36],[-20,-38],[-28,-45],[-35,-52],[-38,-52]]},
 
-  {f:'c',nm:'C. de Malvinas / Falkland',sv:40,tr:'0–6 °C',
+  {f:'c',nm:'C. de Malvinas / Falkland',nm_en:'Malvinas / Falkland Current',sv:40,tr:'0–6 °C',
    cA:T.C3,cB:T.C1,n:50,s:.0014,pts:[[-56,-60],[-50,-61],[-44,-57],[-40,-54],[-38,-52]]},
 
-  {f:'c',nm:'C. del Atlántico Sur',sv:25,tr:'6–12 °C',
+  {f:'c',nm:'C. del Atlántico Sur',nm_en:'South Atlantic Current',sv:25,tr:'6–12 °C',
    cA:T.M1,cB:T.C1,n:70,s:.0013,pts:[[-38,-52],[-39,-42],[-40,-30],[-40,-18],[-39,-6],[-38,6],[-38,18]]},
 
-  {f:'c',nm:'C. de Benguela',sv:15,tr:'3–9 °C',
+  {f:'c',nm:'C. de Benguela',nm_en:'Benguela Current',sv:15,tr:'3–9 °C',
    cA:T.C2,cB:T.M2,n:45,s:.0013,pts:[[-38,18],[-30,14],[-22,12],[-14,10],[-6,9],[-3,5]]},
 
   // ── GIRO ÍNDICO ────────────────────────────────────────────────
-  {f:'w',nm:'C. Ecuatorial Sur Índico',sv:30,tr:'20–24 °C',
+  {f:'w',nm:'C. Ecuatorial Sur Índico',nm_en:'South Indian Equatorial Current',sv:30,tr:'20–24 °C',
    cA:T.W1,cB:T.W1,n:50,s:.0012,pts:[[-8,118],[-10,102],[-10,85],[-10,68],[-10,54],[-11,44]]},
 
-  {f:'w',nm:'C. de Mozambique',sv:20,tr:'20–24 °C',
+  {f:'w',nm:'C. de Mozambique',nm_en:'Mozambique Current',sv:20,tr:'20–24 °C',
    cA:T.W1,cB:T.W2,n:38,s:.0012,pts:[[-11,44],[-17,42],[-22,39],[-26,37],[-28,35]]},
 
-  {f:'w',nm:'C. de las Agujas (Agulhas)',sv:70,tr:'9–20 °C',
+  {f:'w',nm:'C. de las Agujas (Agulhas)',nm_en:'Agulhas Current',sv:70,tr:'9–20 °C',
    cA:T.W2,cB:T.M1,n:45,s:.0015,pts:[[-28,35],[-30,33],[-33,29],[-35,25],[-37,22],[-40,21]]},
 
   {f:'c',cA:T.M1,cB:T.C4,n:30,s:.001,pts:[[-40,21],[-50,24],[-57,28]]},
 
-  {f:'w',nm:'C. del Índico Sur',sv:15,tr:'9–20 °C',
+  {f:'w',nm:'C. del Índico Sur',nm_en:'South Indian Current',sv:15,tr:'9–20 °C',
    cA:T.M1,cB:T.M2,n:55,s:.001,pts:[[-40,21],[-40,40],[-40,60],[-40,82],[-40,100],[-36,108],[-35,115]]},
 
-  {f:'w',nm:'C. Ecuatorial Norte Índico',sv:20,tr:'20–24 °C',
+  {f:'w',nm:'C. Ecuatorial Norte Índico',nm_en:'North Indian Equatorial Current',sv:20,tr:'20–24 °C',
    cA:T.W1,cB:T.W1,n:40,s:.0011,pts:[[10,85],[5,82],[6,75],[6,65],[6,57],[8,48]]},
 
-  {f:'w',nm:'C. de Somalia',sv:30,tr:'20–28 °C',
+  {f:'w',nm:'C. de Somalia',nm_en:'Somali Current',sv:30,tr:'20–28 °C',
    cA:T.W1,cB:T.W1,n:35,s:.0012,pts:[[8,48],[4,46],[1,44],[-3,43],[-7,44],[-11,44]]},
 
   // ── CIRCUMPOLAR ────────────────────────────────────────────────
-  {f:'c',nm:'Circumpolar Antártica',sv:130,tr:'0–2 °C',
+  {f:'c',nm:'Circumpolar Antártica',nm_en:'Antarctic Circumpolar Current',sv:130,tr:'0–2 °C',
    closed:true,n:130,s:.0007,cA:T.C4,cB:T.C4,
    pts:[[-57,-175],[-55,-148],[-57,-120],[-58,-90],[-56,-60],[-57,-30],[-55,-2],[-57,28],[-55,58],[-57,88],[-55,118],[-57,148],[-55,175]]},
 ];
@@ -332,7 +396,10 @@ const btnWarm=document.getElementById('btn-warm');
 const btnCold=document.getElementById('btn-cold');
 const curPanel=document.getElementById('cur-panel');
 
+let activeFilter='all';
+
 function setFilter(mode){
+  activeFilter=mode;
   btnAll.classList.toggle('act',mode==='all');
   btnWarm.classList.toggle('act',mode==='w');
   btnCold.classList.toggle('act',mode==='c');
@@ -347,19 +414,22 @@ function setFilter(mode){
 
 function buildPanel(mode){
   const isW=mode==='w';
+  const t=TR[currentLang];
   const named=CURRENTS.filter(c=>c.f===mode&&c.nm).sort((a,b)=>b.sv-a.sv);
   const maxSv=named[0]?.sv||1;
   const barCol=isW?'#ffb060':'#5aadff';
-  let h=`<div class="cp-ttl ${mode}">${isW?'CORRIENTES CÁLIDAS':'CORRIENTES FRÍAS'}</div>`;
+  const title=isW?t.panelWarm:t.panelCold;
+  let h=`<div class="cp-ttl ${mode}">${title}</div>`;
   named.forEach(c=>{
     const[r,g,b]=c.cA.map(v=>Math.round(v*255));
     const pct=Math.round(c.sv/maxSv*100);
-    h+=`<div class="cp-row"><div class="cp-dot" style="background:rgb(${r},${g},${b})"></div><span class="cp-nm">${c.nm}</span><span class="cp-sv">${c.sv} Sv</span></div>`
+    const name=currentLang==='es'?c.nm:(c.nm_en||c.nm);
+    h+=`<div class="cp-row"><div class="cp-dot" style="background:rgb(${r},${g},${b})"></div><span class="cp-nm">${name}</span><span class="cp-sv">${c.sv} Sv</span></div>`
       +`<div class="cp-bw"><div class="cp-bf" style="width:${pct}%;background:${barCol}"></div></div>`
       +`<div class="cp-tr">${c.tr}</div>`;
   });
   const total=named.reduce((s,c)=>s+c.sv,0);
-  h+=`<div class="cp-foot">1 Sv = 1 000 000 m³/s<br>${named.length} corrientes · ${total} Sv aprox.</div>`;
+  h+=`<div class="cp-foot">1 Sv = 1 000 000 m³/s<br>${named.length} ${t.currents} · ${total} Sv ${t.approx}</div>`;
   curPanel.innerHTML=h;
   curPanel.style.display='block';
 }
@@ -367,6 +437,34 @@ function buildPanel(mode){
 btnAll.addEventListener('click',()=>setFilter('all'));
 btnWarm.addEventListener('click',()=>setFilter('w'));
 btnCold.addEventListener('click',()=>setFilter('c'));
+
+// ─ SELECTOR DE IDIOMA ────────────────────────────────────────
+function applyLang(lang){
+  currentLang=lang;
+  const t=TR[lang];
+  document.documentElement.lang=lang;
+  document.title=t.title;
+  document.getElementById('txt-title').textContent=t.h1;
+  document.getElementById('txt-subtitle').textContent=t.subtitle;
+  document.getElementById('controls-hint').textContent=t.hint;
+  document.getElementById('txt-speed').textContent=t.speed;
+  document.getElementById('txt-leg-title').textContent=t.legTitle;
+  document.getElementById('txt-leg-cold').textContent=t.legCold;
+  document.getElementById('txt-leg-hot').textContent=t.legHot;
+  document.getElementById('txt-leg-warm').textContent=t.legWarm;
+  document.getElementById('txt-leg-cold2').textContent=t.legCold2;
+  document.getElementById('txt-leg-gyre').textContent=t.legGyre;
+  document.getElementById('btn-all').textContent=t.btnAll;
+  document.getElementById('btn-warm').textContent=t.btnWarm;
+  document.getElementById('btn-cold').textContent=t.btnCold;
+  document.getElementById('btn-es').classList.toggle('act',lang==='es');
+  document.getElementById('btn-en').classList.toggle('act',lang==='en');
+  geoLabels.forEach(({el,es,en})=>{el.textContent=lang==='es'?es:en;});
+  if(activeFilter!=='all')buildPanel(activeFilter);
+}
+
+document.getElementById('btn-es').addEventListener('click',()=>applyLang('es'));
+document.getElementById('btn-en').addEventListener('click',()=>applyLang('en'));
 
 // ─ ANIMACIÓN ────────────────────────────────────────────────
 const speedSlider=document.getElementById('speedSlider');
