@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oceanografía – Mareas · Olas · Corrientes</title>
+  <link rel="stylesheet" href="css/mareas.css" />
+</head>
+<body>
+
+  <!-- ─ HEADER ──────────────────────────────────────────────────────────────── -->
+  <div id="header">
+    <button id="btn-back" onclick="location.href='index.html'">← VOLVER AL GLOBO</button>
+    <h1>Oceanografía Aplicada</h1>
+    <nav id="tab-nav">
+      <button class="tab-btn mareas act" data-tab="mareas">🌙 MAREAS</button>
+      <button class="tab-btn olas"       data-tab="olas">〰 OLAS</button>
+      <button class="tab-btn corrientes" data-tab="corrientes">🌀 CORRIENTES</button>
+    </nav>
+  </div>
+
+  <!-- ─ FILA PRINCIPAL (canvas + panel info) ─────────────────────────────────── -->
+  <div id="main">
+
+    <div id="canvas-wrap">
+      <!-- Canvas principal: espacio (mareas) u océano (olas/corrientes) -->
+      <canvas id="mareas-canvas"></canvas>
+
+      <!-- Overlays espacio — solo MAREAS -->
+      <div id="phase-bar">
+        <span id="phase-hud">🌑 LUNA NUEVA</span>
+        <span id="tidal-type" class="tide-muerta">〰 MAREA MUERTA</span>
+      </div>
+      <div id="tidal-explain">
+        <div id="tidal-explain-inner">
+          <p id="te-why"></p>
+          <p id="te-name"></p>
+        </div>
+      </div>
+
+      <!-- HUD océano — solo OLAS: viento + fenómeno -->
+      <div id="wave-hud">
+        <div id="pheno-row-main">
+          <button class="pheno-btn act" data-p="normal">NORMAL</button>
+          <button class="pheno-btn nino" data-p="nino">🔥 EL NIÑO</button>
+          <button class="pheno-btn nina" data-p="nina">❄ LA NIÑA</button>
+        </div>
+        <div id="wind-row">
+          <span class="wl">VIENTO</span>
+          <button id="wind-dir-btn">⇆ INVERTIR</button>
+          <input type="range" id="wind-slider" min="0" max="10" value="4" step="0.5" />
+          <span id="wind-val">4 m/s</span>
+        </div>
+      </div>
+
+      <!-- Etiquetas Este/Oeste — OLAS y MAREAS-strip -->
+      <div id="wave-labels">
+        <div class="wlabel west">◀ OESTE <small>Asia / Oceanía</small></div>
+        <div class="wlabel east">ESTE ▶ <small>América del Sur</small></div>
+      </div>
+
+      <div id="canvas-overlay">
+        <p id="canvas-desc"><strong>Sistema Tierra–Luna</strong> · Los abultamientos azules muestran las dos zonas de marea alta simultáneas</p>
+      </div>
+      <div id="canvas-hint">ARRASTRAR · RUEDA = ZOOM</div>
+    </div><!-- /canvas-wrap -->
+
+    <div id="info-panel">
+
+      <!-- ──────── MAREAS ──────── -->
+      <div class="info-section active" id="sec-mareas">
+        <span class="section-icon">🌙</span>
+        <div class="section-title mareas">Mareas</div>
+        <div class="section-subtitle">Movimiento periódico del nivel del mar</div>
+        <div class="facts-row">
+          <div class="fact-chip"><strong>~12 h 25 min</strong>ciclo semidiurno</div>
+          <div class="fact-chip"><strong>hasta 16 m</strong>amplitud en B. de Fundy</div>
+          <div class="fact-chip"><strong>2 bultos</strong>simultáneos en la Tierra</div>
+          <div class="fact-chip"><strong>Luna + Sol</strong>actúan en conjunto</div>
+        </div>
+        <div class="info-block">
+          <h3 class="cause">POR QUÉ SE PRODUCEN</h3>
+          <p>La <strong>atracción gravitacional de la Luna</strong> es desigual a lo largo de la Tierra. Esta diferencia (<em>fuerza de marea</em>) crea <strong>dos bultos simultáneos</strong>: uno hacia la Luna y otro opuesto por inercia. El Sol ejerce el 46 % de la fuerza lunar. Alineación → <strong>Marea Viva</strong>. A 90° → <strong>Marea Muerta</strong>.</p>
+        </div>
+        <div class="info-block">
+          <h3 class="effect">IMPACTO EN SALVAMENTO</h3>
+          <p>· <strong>Corrientes de marea</strong>: hasta 10 nudos en bahías y estuarios.<br/>· <strong>Deriva de víctimas</strong>: la corriente de marea define la trayectoria SAR.<br/>· <strong>Acceso a playas</strong>: bajamar expone fondos rocosos.<br/>· <strong>Marejada ciclónica</strong>: tormenta + pleamar = máximo peligro costero.</p>
+        </div>
+        <div class="info-block">
+          <h3 class="cause">TIPOS DE MAREA</h3>
+          <p><strong>Semidiurna:</strong> 2 pleamares y 2 bajamares/día (Atlántico).<br/><strong>Diurna:</strong> 1 pleamar y 1 bajamar/día (Golfo de México).<br/><strong>Mixta:</strong> amplitudes desiguales (Pacífico Norte).</p>
+        </div>
+      </div>
+
+      <!-- ──────── OLAS ──────── -->
+      <div class="info-section" id="sec-olas">
+        <!-- Diagrama animado: anatomía de la ola -->
+        <canvas id="wave-diagram"></canvas>
+        <!-- Factores que la hacen peligrosa -->
+        <div class="wf-grid">
+          <div class="wf-item">
+            <span class="wf-icon">💨</span>
+            <strong>Viento fuerte</strong>
+            <small>Más energía transferida al agua</small>
+          </div>
+          <div class="wf-item">
+            <span class="wf-icon">↔</span>
+            <strong>Fetch largo</strong>
+            <small>Mayor recorrido = ola más alta</small>
+          </div>
+          <div class="wf-item">
+            <span class="wf-icon">▽</span>
+            <strong>Poca profundidad</strong>
+            <small>La base frena, la cresta vuelca</small>
+          </div>
+          <div class="wf-item">
+            <span class="wf-icon">🌊</span>
+            <strong>Pleamar + ola</strong>
+            <small>Suma altura: máximo peligro costero</small>
+          </div>
+          <div class="wf-item wf-full">
+            <span class="wf-icon">↩</span>
+            <strong>Corriente de resaca</strong>
+            <small>Sale perpendicular a la costa · principal causa de ahogamientos en playa</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- ──────── CORRIENTES ──────── -->
+      <div class="info-section" id="sec-corrientes">
+        <span class="section-icon">🌀</span>
+        <div class="section-title corrientes">Corrientes Oceánicas</div>
+        <div class="section-subtitle">Motores del clima y la vida marina</div>
+        <div class="facts-row">
+          <div class="fact-chip"><strong>130 Sv</strong>Circumpolar Antártica</div>
+          <div class="fact-chip"><strong>100 Sv</strong>Gulf Stream</div>
+          <div class="fact-chip"><strong>~1000 años</strong>ciclo termohalino</div>
+          <div class="fact-chip"><strong>5 grandes</strong>giros oceánicos</div>
+        </div>
+        <div class="info-block">
+          <h3 class="cause">CORRIENTES SUPERFICIALES</h3>
+          <p>Impulsadas por el <strong>viento</strong>. La <strong>fuerza de Coriolis</strong> las desvía a la derecha (N) o izquierda (S), creando los cinco grandes <em>giros oceánicos</em>.</p>
+        </div>
+        <div class="info-block">
+          <h3 class="cause">CORRIENTES PROFUNDAS (TERMOHALINAS)</h3>
+          <p>Las diferencias de <strong>temperatura y salinidad</strong> cambian la densidad. En los polos el agua se hunde formando la <em>cinta transportadora termohalina</em>.</p>
+        </div>
+        <div class="info-block">
+          <h3 class="effect">IMPACTO EN SALVAMENTO</h3>
+          <p>· <strong>Deriva SAR</strong>: corrientes superficiales definen trayectoria de víctimas y embarcaciones.<br/>· <strong>Gulf Stream</strong>: calienta Europa occidental 5–10 °C.<br/>· <strong>Manchas de combustible</strong>: se dispersan siguiendo las corrientes.</p>
+        </div>
+      </div>
+
+    </div><!-- /info-panel -->
+  </div><!-- /main -->
+
+  <!-- ─ FRANJA OCEÁNICA FULL-WIDTH — solo visible en MAREAS ───────────────────── -->
+  <div id="ocean-strip">
+    <canvas id="ocean-strip-canvas"></canvas>
+
+    <!-- Controles superpuestos -->
+    <div id="strip-ui">
+      <div id="strip-pheno-row">
+        <button class="pheno-btn act" data-p="normal">NORMAL</button>
+        <button class="pheno-btn nino" data-p="nino">🔥 EL NIÑO</button>
+        <button class="pheno-btn nina" data-p="nina">❄ LA NIÑA</button>
+      </div>
+      <div id="strip-wind-row">
+        <span class="wl">VIENTO</span>
+        <button id="strip-wind-dir-btn">⇆ INVERTIR</button>
+        <input type="range" id="strip-wind-slider" min="0" max="10" value="4" step="0.5" />
+        <span id="strip-wind-val">4 m/s</span>
+      </div>
+      <div id="temp-scale">
+        <span class="ts-lbl cold">❄ 18 °C</span>
+        <div class="ts-bar-wrap">
+          <div class="ts-bar"></div>
+          <div id="ts-marker"></div>
+        </div>
+        <span class="ts-lbl warm">30 °C 🔥</span>
+        <span id="ts-state" class="ts-state">〰 Temperatura normal</span>
+      </div>
+    </div>
+    <div id="strip-labels">
+      <span class="strip-lbl">◀ OESTE — Asia / Oceanía</span>
+      <span class="strip-lbl center" id="strip-center-lbl">OCÉANO PACÍFICO TROPICAL</span>
+      <span class="strip-lbl right">América del Sur — ESTE ▶</span>
+    </div>
+    <!-- Cuadro interactivo: viento vs marea -->
+    <div id="wind-tide-box">
+      <div class="wtb-title">VIENTO Y CORRIENTE DE MAREA</div>
+      <div class="wtb-row wtb-favor" id="wtb-favor">
+        <span class="wtb-icon">⟶⟶</span>
+        <div>
+          <strong>Viento acompaña la marea</strong>
+          Olas más altas y largas · deriva SAR amplificada · embarcaciones ganan velocidad
+        </div>
+      </div>
+      <div class="wtb-row wtb-contra" id="wtb-contra">
+        <span class="wtb-icon">⟵⟶</span>
+        <div>
+          <strong>Viento contra la marea</strong>
+          Mar de leva · olas cortas y empinadas · condición peligrosa para rescate
+        </div>
+      </div>
+    </div>
+
+    <div id="tide-bar">
+      <span class="tb-lbl">BAJAMAR</span>
+      <div class="tb-track"><div id="tide-fill"></div></div>
+      <span class="tb-lbl">PLEAMAR</span>
+      <span id="tide-lbl" class="tide-lbl-state">〰 MAREA MEDIA</span>
+    </div>
+  </div>
+
+  <script type="importmap">
+    {"imports":{"three":"https://unpkg.com/three@0.158.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.158.0/examples/jsm/"}}
+  </script>
+  <script type="module" src="src/mareas.js?v=15"></script>
+</body>
+</html>
