@@ -2,12 +2,14 @@ import { CURRENTS } from './data.js';
 import { curObjects } from './currents.js';
 import { earthMesh, camera, renderer } from './scene.js';
 import * as THREE from 'three';
+import { t, curName, onLangChange } from './i18n.js';
 
 // ─ FILTER CONTROLS ───────────────────────────────────────────────────────────
 const btnAll  = document.getElementById('btn-all');
 const btnWarm = document.getElementById('btn-warm');
 const btnCold = document.getElementById('btn-cold');
 const curPanel = document.getElementById('cur-panel');
+let activeFilter = 'all';
 
 function buildPanel(mode) {
   const isW  = mode === 'w';
@@ -17,25 +19,26 @@ function buildPanel(mode) {
   const maxSv  = named[0]?.sv || 1;
   const barCol = isW ? '#ffb060' : '#5aadff';
 
-  let h = `<div class="cp-ttl ${mode}">${isW ? 'CORRIENTES CÁLIDAS' : 'CORRIENTES FRÍAS'}</div>`;
+  let h = `<div class="cp-ttl ${mode}">${isW ? t('panelWarm') : t('panelCold')}</div>`;
   named.forEach(c => {
     const [r, g, b] = c.cA.map(v => Math.round(v * 255));
     const pct = Math.round(c.sv / maxSv * 100);
     h += `<div class="cp-row">
             <div class="cp-dot" style="background:rgb(${r},${g},${b})"></div>
-            <span class="cp-nm">${c.nm}</span>
+            <span class="cp-nm">${curName(c)}</span>
             <span class="cp-sv">${c.sv} Sv</span>
           </div>
           <div class="cp-bw"><div class="cp-bf" style="width:${pct}%;background:${barCol}"></div></div>
           <div class="cp-tr">${c.tr}</div>`;
   });
   const total = named.reduce((s, c) => s + c.sv, 0);
-  h += `<div class="cp-foot">1 Sv = 1 000 000 m³/s<br>${named.length} corrientes · ${total} Sv aprox.</div>`;
+  h += `<div class="cp-foot">1 Sv = 1 000 000 m³/s<br>${named.length} ${t('currents')} · ${total} Sv ${t('approx')}</div>`;
   curPanel.innerHTML = h;
   curPanel.style.display = 'block';
 }
 
 export function setFilter(mode) {
+  activeFilter = mode;
   btnAll.classList.toggle('act',  mode === 'all');
   btnWarm.classList.toggle('act', mode === 'w');
   btnCold.classList.toggle('act', mode === 'c');
@@ -58,13 +61,11 @@ btnCold.addEventListener('click', () => setFilter('c'));
 const curCard = document.getElementById('cur-card');
 
 const PROCESO = {
-  afloramiento: { lbl: '⬆ AFLORAMIENTO', cls: 'af',
-    desc: 'Agua fría y rica en nutrientes asciende desde las profundidades a la superficie, impulsada por los vientos costeros.' },
-  hundimiento:  { lbl: '⬇ HUNDIMIENTO',  cls: 'hu',
-    desc: 'Agua densa, fría o salina se hunde hacia las profundidades, impulsando la circulación termohalina global.' },
-  convergencia: { lbl: '↕ CONVERGENCIA', cls: 'cv',
-    desc: 'Masas de agua de distinta temperatura y densidad se encuentran, generando mezcla intensa y gran productividad biológica.' },
+  afloramiento: { lbl: 'procAf', desc: 'procAfD', cls: 'af' },
+  hundimiento:  { lbl: 'procHu', desc: 'procHuD', cls: 'hu' },
+  convergencia: { lbl: 'procCv', desc: 'procCvD', cls: 'cv' },
 };
+let tipCur = null;
 
 function hideTip() {
   curCard.classList.remove('show');
@@ -73,21 +74,22 @@ function hideTip() {
 
 function showCurrentTip(cur) {
   if (!cur?.nm) { hideTip(); return; }
+  tipCur = cur;
   const p = cur.proceso ? PROCESO[cur.proceso] : null;
 
   let h = `<div class="crd-head ${cur.f}">
     <div class="crd-title">
-      <div class="crd-name">${cur.nm}</div>
-      <div class="crd-badge ${cur.f}">${cur.f === 'w' ? 'Cálida' : 'Fría'}</div>
+      <div class="crd-name">${curName(cur)}</div>
+      <div class="crd-badge ${cur.f}">${cur.f === 'w' ? t('warm') : t('cold')}</div>
     </div>
     <button class="crd-close">×</button>
   </div>
   <div class="crd-body">`;
 
-  if (cur.tr) h += `<div class="crd-stat"><span class="crd-slabel">Temperatura</span><span class="crd-sval">${cur.tr}</span></div>`;
-  if (cur.sv) h += `<div class="crd-stat"><span class="crd-slabel">Transporte</span><span class="crd-sval">${cur.sv} Sv</span></div>`;
-  h += `<div class="crd-stat"><span class="crd-slabel">1 Sv equivale a</span><span class="crd-sval">1 000 000 m³/s</span></div>`;
-  if (p) h += `<div class="crd-proc ${p.cls}"><div class="crd-plbl">${p.lbl}</div><div class="crd-pdesc">${p.desc}</div></div>`;
+  if (cur.tr) h += `<div class="crd-stat"><span class="crd-slabel">${t('temp')}</span><span class="crd-sval">${cur.tr}</span></div>`;
+  if (cur.sv) h += `<div class="crd-stat"><span class="crd-slabel">${t('transport')}</span><span class="crd-sval">${cur.sv} Sv</span></div>`;
+  h += `<div class="crd-stat"><span class="crd-slabel">${t('svEq')}</span><span class="crd-sval">1 000 000 m³/s</span></div>`;
+  if (p) h += `<div class="crd-proc ${p.cls}"><div class="crd-plbl">${t(p.lbl)}</div><div class="crd-pdesc">${t(p.desc)}</div></div>`;
   h += `</div>`;
 
   curCard.innerHTML = h;
@@ -95,6 +97,12 @@ function showCurrentTip(cur) {
   requestAnimationFrame(() => curCard.classList.add('show'));
   curCard.querySelector('.crd-close').addEventListener('click', hideTip, { once: true });
 }
+
+// Re-render de panel y card al cambiar idioma
+onLangChange(() => {
+  if (activeFilter !== 'all') buildPanel(activeFilter);
+  if (tipCur && curCard.classList.contains('show')) showCurrentTip(tipCur);
+});
 
 // ─ PICKING (clic en corriente) ────────────────────────────────────────────────
 const _ray = new THREE.Raycaster();
